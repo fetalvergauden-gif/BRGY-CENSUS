@@ -1455,6 +1455,6 @@ app.use((error, req, res, next) => {
 
 app.listen(PORT, () => {
   console.log(
-    `Barangay Census API running at http://localhost:${PORT}`
+    `Barangay Census API running :${PORT}`
   );
 });
