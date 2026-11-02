@@ -1,0 +1,519 @@
+{
+  "version": 2,
+  "sections": [
+    {
+      "id": "household-information",
+      "title": "Household Information",
+      "description": "Basic information about the household and interview.",
+      "fields": [
+        {
+          "id": "householdNumber",
+          "key": "householdNumber",
+          "path": "householdNumber",
+          "label": "Household Number",
+          "type": "text",
+          "required": true,
+          "options": []
+        },
+        {
+          "id": "householdHead",
+          "key": "householdHead",
+          "path": "householdHead",
+          "label": "Household Head",
+          "type": "text",
+          "required": true,
+          "options": []
+        },
+        {
+          "id": "censusYear",
+          "key": "censusYear",
+          "path": "censusYear",
+          "label": "Census Year",
+          "type": "number",
+          "required": true,
+          "options": []
+        },
+        {
+          "id": "dateInterviewed",
+          "key": "dateInterviewed",
+          "path": "dateInterviewed",
+          "label": "Date Interviewed",
+          "type": "date",
+          "required": true,
+          "options": []
+        }
+      ]
+    },
+    {
+      "id": "personal-information",
+      "title": "Personal Information",
+      "description": "Personal details of the household head.",
+      "fields": [
+        {
+          "id": "firstName",
+          "key": "firstName",
+          "path": "firstName",
+          "label": "First Name",
+          "type": "text",
+          "required": true,
+          "options": []
+        },
+        {
+          "id": "middleName",
+          "key": "middleName",
+          "path": "middleName",
+          "label": "Middle Name",
+          "type": "text",
+          "required": false,
+          "options": []
+        },
+        {
+          "id": "lastName",
+          "key": "lastName",
+          "path": "lastName",
+          "label": "Last Name",
+          "type": "text",
+          "required": true,
+          "options": []
+        },
+        {
+          "id": "suffix",
+          "key": "suffix",
+          "path": "suffix",
+          "label": "Suffix",
+          "type": "text",
+          "required": false,
+          "options": []
+        },
+        {
+          "id": "sex",
+          "key": "sex",
+          "path": "sex",
+          "label": "Sex",
+          "type": "select",
+          "required": true,
+          "options": [
+            "Male",
+            "Female"
+          ]
+        },
+        {
+          "id": "dateOfBirth",
+          "key": "dateOfBirth",
+          "path": "dateOfBirth",
+          "label": "Date of Birth",
+          "type": "date",
+          "required": false,
+          "options": []
+        },
+        {
+          "id": "age",
+          "key": "age",
+          "path": "age",
+          "label": "Age",
+          "type": "number",
+          "required": false,
+          "options": []
+        },
+        {
+          "id": "birthplace",
+          "key": "birthplace",
+          "path": "birthplace",
+          "label": "Birthplace",
+          "type": "text",
+          "required": false,
+          "options": []
+        },
+        {
+          "id": "civilStatus",
+          "key": "civilStatus",
+          "path": "civilStatus",
+          "label": "Civil Status",
+          "type": "select",
+          "required": false,
+          "options": [
+            "Single",
+            "Married",
+            "Widowed",
+            "Separated",
+            "Divorced"
+          ]
+        },
+        {
+          "id": "citizenship",
+          "key": "citizenship",
+          "path": "citizenship",
+          "label": "Citizenship",
+          "type": "text",
+          "required": false,
+          "options": []
+        },
+        {
+          "id": "religion",
+          "key": "religion",
+          "path": "religion",
+          "label": "Religion",
+          "type": "text",
+          "required": false,
+          "options": []
+        }
+      ]
+    },
+    {
+      "id": "address-information",
+      "title": "Address Information",
+      "description": "Complete household address.",
+      "fields": [
+        {
+          "id": "address-houseNumber",
+          "key": "address.houseNumber",
+          "path": "address.houseNumber",
+          "label": "House Number",
+          "type": "text",
+          "required": false,
+          "options": []
+        },
+        {
+          "id": "address-street",
+          "key": "address.street",
+          "path": "address.street",
+          "label": "Street",
+          "type": "text",
+          "required": false,
+          "options": []
+        },
+        {
+          "id": "address-sitio",
+          "key": "address.sitio",
+          "path": "address.sitio",
+          "label": "Sitio",
+          "type": "text",
+          "required": true,
+          "options": []
+        },
+        {
+          "id": "address-barangay",
+          "key": "address.barangay",
+          "path": "address.barangay",
+          "label": "Barangay",
+          "type": "text",
+          "required": false,
+          "options": []
+        },
+        {
+          "id": "address-municipality",
+          "key": "address.municipality",
+          "path": "address.municipality",
+          "label": "Municipality",
+          "type": "text",
+          "required": false,
+          "options": []
+        },
+        {
+          "id": "address-province",
+          "key": "address.province",
+          "path": "address.province",
+          "label": "Province",
+          "type": "text",
+          "required": false,
+          "options": []
+        }
+      ]
+    },
+    {
+      "id": "educational-information",
+      "title": "Educational Information",
+      "description": "Education details of the household head.",
+      "fields": [
+        {
+          "id": "education-attainment",
+          "key": "education.attainment",
+          "path": "education.attainment",
+          "label": "Educational Attainment",
+          "type": "select",
+          "required": false,
+          "options": [
+            "Elementary",
+            "Elementary Graduate",
+            "High School",
+            "High School Graduate",
+            "College",
+            "College Graduate",
+            "Post Graduate"
+          ]
+        },
+        {
+          "id": "education-school",
+          "key": "education.school",
+          "path": "education.school",
+          "label": "School / Institution",
+          "type": "text",
+          "required": false,
+          "options": []
+        },
+        {
+          "id": "education-attending",
+          "key": "education.attending",
+          "path": "education.attending",
+          "label": "Currently Attending School",
+          "type": "select",
+          "required": false,
+          "options": [
+            "Yes",
+            "No"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "employment---livelihood",
+      "title": "Employment / Livelihood",
+      "description": "Employment and income information.",
+      "fields": [
+        {
+          "id": "employment-occupation",
+          "key": "employment.occupation",
+          "path": "employment.occupation",
+          "label": "Occupation",
+          "type": "text",
+          "required": false,
+          "options": []
+        },
+        {
+          "id": "employment-status",
+          "key": "employment.status",
+          "path": "employment.status",
+          "label": "Employment Status",
+          "type": "select",
+          "required": false,
+          "options": [
+            "Employed",
+            "Self-Employed",
+            "Unemployed",
+            "Not Employed",
+            "Retired",
+            "Student"
+          ]
+        },
+        {
+          "id": "employment-employer",
+          "key": "employment.employer",
+          "path": "employment.employer",
+          "label": "Employer",
+          "type": "text",
+          "required": false,
+          "options": []
+        },
+        {
+          "id": "employment-incomeRange",
+          "key": "employment.incomeRange",
+          "path": "employment.incomeRange",
+          "label": "Monthly Income Range",
+          "type": "select",
+          "required": false,
+          "options": [
+            "Below ₱10,000",
+            "₱10,000–₱19,999",
+            "₱20,000–₱29,999",
+            "₱30,000–₱49,999",
+            "₱50,000 and above"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "household-members",
+      "title": "Household Members",
+      "description": "Add all members living in this household.",
+      "fields": [
+        {
+          "id": "fullName",
+          "key": "fullName",
+          "path": "fullName",
+          "label": "Full Name",
+          "type": "text",
+          "required": true,
+          "options": []
+        },
+        {
+          "id": "relationship",
+          "key": "relationship",
+          "path": "relationship",
+          "label": "Relationship to Head",
+          "type": "text",
+          "required": false,
+          "options": []
+        },
+        {
+          "id": "sex",
+          "key": "sex",
+          "path": "sex",
+          "label": "Sex",
+          "type": "select",
+          "required": true,
+          "options": [
+            "Male",
+            "Female"
+          ]
+        },
+        {
+          "id": "dateOfBirth",
+          "key": "dateOfBirth",
+          "path": "dateOfBirth",
+          "label": "Date of Birth",
+          "type": "date",
+          "required": false,
+          "options": []
+        },
+        {
+          "id": "age",
+          "key": "age",
+          "path": "age",
+          "label": "Age",
+          "type": "number",
+          "required": false,
+          "options": []
+        },
+        {
+          "id": "civilStatus",
+          "key": "civilStatus",
+          "path": "civilStatus",
+          "label": "Civil Status",
+          "type": "select",
+          "required": false,
+          "options": [
+            "Single",
+            "Married",
+            "Widowed",
+            "Separated",
+            "Divorced"
+          ]
+        },
+        {
+          "id": "occupation",
+          "key": "occupation",
+          "path": "occupation",
+          "label": "Occupation",
+          "type": "text",
+          "required": false,
+          "options": []
+        },
+        {
+          "id": "educationalAttainment",
+          "key": "educationalAttainment",
+          "path": "educationalAttainment",
+          "label": "Educational Attainment",
+          "type": "text",
+          "required": false,
+          "options": []
+        },
+        {
+          "id": "seniorCitizen",
+          "key": "seniorCitizen",
+          "path": "seniorCitizen",
+          "label": "Senior Citizen",
+          "type": "checkbox",
+          "required": false,
+          "options": []
+        },
+        {
+          "id": "pwd",
+          "key": "pwd",
+          "path": "pwd",
+          "label": "Person with Disability (PWD)",
+          "type": "checkbox",
+          "required": false,
+          "options": []
+        },
+        {
+          "id": "fourPs",
+          "key": "fourPs",
+          "path": "fourPs",
+          "label": "4Ps Beneficiary",
+          "type": "checkbox",
+          "required": false,
+          "options": []
+        }
+      ],
+      "repeatable": "members"
+    },
+    {
+      "id": "character-references",
+      "title": "Character References",
+      "description": "Provide character references if required.",
+      "fields": [
+        {
+          "id": "name",
+          "key": "name",
+          "path": "name",
+          "label": "Name",
+          "type": "text",
+          "required": false,
+          "options": []
+        },
+        {
+          "id": "address",
+          "key": "address",
+          "path": "address",
+          "label": "Address",
+          "type": "text",
+          "required": false,
+          "options": []
+        },
+        {
+          "id": "contactNumber",
+          "key": "contactNumber",
+          "path": "contactNumber",
+          "label": "Contact Number",
+          "type": "text",
+          "required": false,
+          "options": []
+        },
+        {
+          "id": "relationship",
+          "key": "relationship",
+          "path": "relationship",
+          "label": "Relationship",
+          "type": "text",
+          "required": false,
+          "options": []
+        }
+      ],
+      "repeatable": "characterReferences"
+    },
+    {
+      "id": "declaration",
+      "title": "Declaration",
+      "description": "Certification by the person providing the information.",
+      "fields": [
+        {
+          "id": "declaration-certified",
+          "key": "declaration.certified",
+          "path": "declaration.certified",
+          "label": "I certify that the information provided is true and correct.",
+          "type": "checkbox",
+          "required": true,
+          "options": []
+        },
+        {
+          "id": "declaration-name",
+          "key": "declaration.name",
+          "path": "declaration.name",
+          "label": "Name of Declarant",
+          "type": "text",
+          "required": true,
+          "options": []
+        },
+        {
+          "id": "declaration-date",
+          "key": "declaration.date",
+          "path": "declaration.date",
+          "label": "Date",
+          "type": "date",
+          "required": true,
+          "options": []
+        }
+      ]
+    }
+  ]
+}

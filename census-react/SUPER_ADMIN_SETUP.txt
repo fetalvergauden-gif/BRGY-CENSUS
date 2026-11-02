@@ -1,0 +1,9 @@
+SUPER ADMIN DASHBOARD UPDATE
+
+Added:
+- src/pages/SuperAdminDashboard.jsx
+- src/pages/SuperAdminDashboard.css
+
+Focus: registered-user management.
+No localStorage is used.
+The dashboard currently uses sample data only; connect the table to Firebase users when ready.

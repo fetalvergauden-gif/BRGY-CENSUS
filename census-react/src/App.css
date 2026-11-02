@@ -1,0 +1,95 @@
+
+:root{--violet:#6d28d9;--violet-2:#7c3aed;--violet-soft:#f3efff;--navy:#25103f;--ink:#1f2937;--muted:#64748b;--line:#e5e7eb;--page:#f6f7fb}
+*{box-sizing:border-box}body{background:var(--page);color:var(--ink)}button{cursor:pointer}.brand-mark{display:inline-flex;align-items:center;gap:10px;color:#fff;text-align:left}.brand-logo{width:42px;height:42px;border-radius:12px;background:#fff;padding:5px;object-fit:contain}.brand-mark strong,.brand-mark small{display:block;line-height:1}.brand-mark strong{font-size:12px;letter-spacing:.5px}.brand-mark small{color:#c4b5fd;font-weight:800;font-size:10px;margin-top:4px;letter-spacing:.5px}
+.landing-page{min-height:100vh;background:#fff}.landing-navbar{background:linear-gradient(90deg,#25103f,#4c1d95)}.landing-navbar .btn{border-radius:999px}.hero-section{min-height:610px;display:flex;align-items:center;position:relative;background:radial-gradient(circle at 80% 20%,rgba(124,58,237,.25),transparent 30%),linear-gradient(135deg,#24103d,#5b21b6);color:#fff;padding:80px 0 65px}.hero-section:before{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.09) 1px,transparent 1px);background-size:26px 26px;opacity:.3}.eyebrow,.section-kicker{display:inline-block;color:#c4b5fd;font-size:12px;font-weight:800;letter-spacing:1.6px;margin-bottom:13px}.hero-section h1{font-size:clamp(40px,5vw,68px);line-height:1;font-weight:900;letter-spacing:-2px}.hero-section h1 span{color:#ddd6fe}.hero-lead{font-size:20px;font-weight:600;max-width:650px}.hero-copy{color:#ddd6fe;line-height:1.7;max-width:650px}.btn-hero-primary,.btn-census-primary{background:var(--violet-2);border-color:var(--violet-2);color:#fff;font-weight:800;border-radius:12px}.btn-hero-primary{background:#fff;color:#4c1d95;border-radius:999px;padding:13px 26px}.btn-signup{background:#fff;color:#4c1d95;border:0;font-weight:800}.census-hero-card{width:min(390px,100%);aspect-ratio:1/1;position:relative;margin:auto;border-radius:32px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.25);backdrop-filter:blur(10px);display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 30px 70px rgba(0,0,0,.2)}.census-hero-card>i{font-size:110px;color:#ddd6fe}.census-hero-card strong{display:block;font-size:28px}.census-hero-card small{display:block;text-align:center;color:#c4b5fd;font-weight:800;letter-spacing:2px}.census-hero-lines{width:65%;margin-top:25px}.census-hero-lines span{height:8px;background:rgba(255,255,255,.2);display:block;border-radius:10px;margin:9px}.about-section{background:#fff}.feature-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:25px;box-shadow:0 8px 25px rgba(31,41,55,.05)}.feature-card.light{height:100%}.feature-icon{width:55px;height:55px;border-radius:15px;background:var(--violet-soft);color:var(--violet);display:grid;place-items:center;font-size:24px;margin-bottom:18px}.feature-card h3{font-size:19px;font-weight:800}.feature-card p{color:var(--muted);line-height:1.6}
+.auth-page{min-height:100vh;background:radial-gradient(circle at 10% 10%,rgba(124,58,237,.18),transparent 25%),linear-gradient(135deg,#24103d,#5b21b6)}.auth-card{border-radius:22px;overflow:hidden}.auth-logo{width:66px;height:66px;margin:0 auto 15px;display:grid;place-items:center;border-radius:18px;background:var(--violet-soft);color:var(--violet);font-size:34px}.auth-card .form-control,.auth-card .form-select{border-radius:11px}.btn-auth-primary{background:var(--violet);color:#fff;border:0;border-radius:11px}.auth-back{color:var(--muted)}
+.app-sidebar{background:linear-gradient(180deg,#25103f,#3b176b);box-shadow:4px 0 18px rgba(0,0,0,.12);position:sticky;top:0;height:100vh}.app-sidebar-brand{color:#fff}.app-sidebar .app-nav-link,.app-mobile-menu .app-nav-link{display:flex;align-items:center;gap:12px;color:#ddd6fe;font-size:14px;font-weight:600;padding:11px 14px;margin:2px 0;border-radius:10px}.app-sidebar .app-nav-link .nav-icon,.app-mobile-menu .app-nav-link .nav-icon{font-size:16px;width:20px;text-align:center}.app-sidebar .app-nav-link:hover,.app-mobile-menu .app-nav-link:hover{background:rgba(255,255,255,.09);color:#fff}.app-sidebar .app-nav-link.active,.app-mobile-menu .app-nav-link.active{background:#a78bfa;color:#25103f}.app-nav-logout{color:#fca5a5!important}.app-nav-divider{border-color:rgba(255,255,255,.15)}.app-mobile-nav{background:#25103f;position:relative}.app-mobile-toggle{background:transparent;border:0;color:#fff}.mobile-menu{position:absolute;top:100%;left:0;right:0;z-index:1050;background:#4c1d95;box-shadow:0 10px 24px rgba(0,0,0,.15)}
+.census-main{background:var(--page);min-height:100vh}.page-header h1{font-size:30px;font-weight:850}.data-card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:0 5px 18px rgba(15,23,42,.04)}.data-card h5{font-weight:800}.stat-card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px}.census-stat .stat-icon{width:42px;height:42px;border-radius:12px;background:var(--violet-soft);color:var(--violet);display:grid;place-items:center}.stat-number{font-size:29px;font-weight:900;margin-top:5px}.mini-stat{display:flex;align-items:center;gap:14px;background:#faf9ff;border:1px solid #ede9fe;padding:16px;border-radius:14px}.mini-stat i{font-size:25px;color:var(--violet)}.mini-stat span,.mini-stat strong{display:block}.mini-stat strong{font-size:24px}.bar-row{margin-bottom:17px}.bar-track{height:10px;background:#ede9fe;border-radius:99px;overflow:hidden;margin-top:6px}.bar-fill{height:100%;background:linear-gradient(90deg,#6d28d9,#a78bfa);border-radius:99px}.table th{font-size:12px;text-transform:uppercase;color:#64748b;white-space:nowrap}.table td{font-size:14px}.detail-label{text-transform:uppercase;font-size:10px;font-weight:800;color:#94a3b8;letter-spacing:.7px;margin-bottom:3px}
+.census-user-shell{min-height:100vh;background:#f7f5ff}.form-intro{background:linear-gradient(135deg,#25103f,#6d28d9);color:#fff;border-radius:20px;padding:30px;margin-bottom:18px}.form-intro .section-kicker{color:#ddd6fe}.form-intro p{color:#ede9fe;margin-bottom:0}.census-form-card{display:flex;gap:17px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:23px;margin-bottom:16px;box-shadow:0 5px 16px rgba(31,41,55,.04)}.section-number{width:36px;height:36px;flex:0 0 36px;border-radius:50%;background:var(--violet-soft);color:var(--violet);display:grid;place-items:center;font-weight:900}.census-form-card h2{font-size:18px;font-weight:850;margin-bottom:18px}.member-card{background:#faf9ff;border:1px solid #e9e3ff;border-radius:14px;padding:15px}.success-card{max-width:650px;margin:12vh auto;background:#fff;border:1px solid var(--line);border-radius:24px;padding:55px 30px;box-shadow:0 15px 40px rgba(31,41,55,.08)}.success-icon{width:76px;height:76px;border-radius:50%;background:#dcfce7;color:#15803d;display:grid;place-items:center;font-size:38px;margin:0 auto 20px}
+@media(max-width:767px){.hero-section{padding:55px 0}.hero-section h1{letter-spacing:-1px}.census-form-card{display:block}.section-number{margin-bottom:15px}.page-header h1{font-size:25px}.data-card{padding:15px}.table{min-width:760px}}
+@media print{.app-sidebar,.app-mobile-nav,.btn,.page-header .section-kicker{display:none!important}.census-main{width:100%!important}.data-card{box-shadow:none;border:1px solid #ddd}}
+
+
+/* Hardware Inventory reference: responsive admin shell, collapsible navigation and compact controls */
+.census-app-layout { display:flex; align-items:stretch; min-height:100svh; width:100%; background:#f6f7fb; }
+.census-main { flex:1 1 auto; min-width:0; width:auto; overflow-x:clip; }
+.census-page-content { width:100%; max-width:1800px; margin:0 auto; padding:clamp(12px,2vw,28px); }
+.app-sidebar-desktop { position:sticky; top:0; z-index:1030; display:flex; flex-direction:column; flex:0 0 252px; width:252px; height:100svh; min-height:100svh; background:linear-gradient(180deg,#251052,#3a1b78); box-shadow:4px 0 18px rgba(23,12,49,.12); color:#fff; overflow:hidden; transition:width .18s ease,flex-basis .18s ease; }
+.app-sidebar-brand-wrap { min-height:76px; display:flex; align-items:center; gap:6px; padding:12px 10px; border-bottom:1px solid rgba(255,255,255,.1); }
+.app-sidebar-desktop .app-sidebar-brand, .app-phone-header .app-sidebar-brand { min-width:0; flex:1 1 auto; display:flex; align-items:center; gap:9px; color:#fff; text-decoration:none; overflow:hidden; }
+.app-sidebar-brand .brand-logo { width:38px; height:38px; flex:0 0 38px; object-fit:contain; background:#fff; border-radius:50%; padding:3px; }
+.app-brand-copy { min-width:0; display:flex; flex-direction:column; line-height:1.15; white-space:nowrap; overflow:hidden; }
+.app-brand-copy strong { font-size:clamp(10px,.85vw,12px); letter-spacing:.4px; }
+.app-brand-copy small { color:#d7c6ff; margin-top:4px; font-size:9px; letter-spacing:.7px; }
+.sidebar-collapse-button { flex:0 0 32px; width:32px; height:32px; display:grid; place-items:center; color:#fff; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.15); border-radius:8px; }
+.sidebar-collapse-button:hover { background:rgba(255,255,255,.17); }
+.app-sidebar-links { display:flex; flex:1 1 auto; flex-direction:column; gap:3px; overflow-y:auto; overflow-x:hidden; padding:10px 9px; }
+.app-sidebar-desktop .app-nav-link, .app-mobile-bottom-nav .app-nav-link { display:flex; align-items:center; gap:11px; min-height:43px; padding:10px 12px; margin:1px 0; border-radius:9px; color:#e5dcf7; font-size:13px; font-weight:600; white-space:nowrap; text-decoration:none; transition:background .15s,color .15s; }
+.app-sidebar-desktop .app-nav-link .nav-icon, .app-mobile-bottom-nav .app-nav-link .nav-icon { flex:0 0 22px; width:22px; text-align:center; font-size:17px; }
+.app-sidebar-desktop .app-nav-link b, .app-mobile-bottom-nav .app-nav-link b { overflow:hidden; text-overflow:ellipsis; }
+.app-sidebar-desktop .app-nav-link:hover, .app-mobile-bottom-nav .app-nav-link:hover { color:#fff; background:rgba(255,255,255,.1); }
+.app-sidebar-desktop .app-nav-link.active, .app-mobile-bottom-nav .app-nav-link.active { color:#2b1554; background:#e9ddff; box-shadow:0 4px 10px rgba(0,0,0,.12); }
+.app-sidebar-desktop .app-nav-logout, .app-mobile-bottom-nav .app-nav-logout { color:#ffc6c6; }
+.app-sidebar-footer { padding:10px; border-top:1px solid rgba(255,255,255,.13); }
+.app-sidebar-desktop.is-collapsed { flex-basis:76px; width:76px; }
+.app-sidebar-desktop.is-collapsed .app-sidebar-brand-wrap { flex-direction:column; padding:9px 5px; gap:5px; }
+.app-sidebar-desktop.is-collapsed .app-sidebar-brand { justify-content:center; flex:0 0 auto; }
+.app-sidebar-desktop.is-collapsed .app-sidebar-brand .brand-logo { width:32px; height:32px; flex-basis:32px; }
+.app-sidebar-desktop.is-collapsed .app-brand-copy, .app-sidebar-desktop.is-collapsed .app-nav-link b { display:none; }
+.app-sidebar-desktop.is-collapsed .sidebar-collapse-button { width:28px; height:25px; flex-basis:25px; }
+.app-sidebar-desktop.is-collapsed .app-nav-link { justify-content:center; padding-inline:0; }
+.app-sidebar-desktop.is-collapsed .app-sidebar-footer { padding:8px; }
+.app-phone-header, .app-mobile-bottom-nav { display:none; }
+.page-header h1 { font-size:clamp(1.35rem,2.3vw,2rem); overflow-wrap:anywhere; }
+.page-header p, .census-main p { font-size:clamp(.82rem,1vw,.98rem); }
+.census-main .card { min-width:0; }
+.census-main .table-responsive { max-width:100%; overflow-x:auto; -webkit-overflow-scrolling:touch; }
+.census-main table { min-width:620px; }
+.census-main th, .census-main td { padding:clamp(.45rem,.8vw,.8rem); font-size:clamp(.72rem,.9vw,.88rem); vertical-align:middle; }
+.census-main .btn { max-width:100%; white-space:normal; font-size:clamp(.74rem,.9vw,.9rem); padding:clamp(.35rem,.65vw,.55rem) clamp(.55rem,1vw,.9rem); }
+.census-main .form-control, .census-main .form-select { min-width:0; max-width:100%; font-size:clamp(.82rem,1vw,.95rem); }
+.census-main .modal-dialog { width:calc(100% - 2rem); max-width:min(900px,calc(100% - 2rem)); margin:1rem auto; }
+.census-main .modal-content { max-height:calc(100svh - 2rem); overflow:hidden; }
+.census-main .modal-body { overflow-y:auto; }
+.census-main .modal-title { font-size:clamp(1rem,2vw,1.35rem); }
+.census-main .row > [class*="col-"] { min-width:0; }
+@media (max-width: 1199.98px) {
+ .app-sidebar-desktop { flex-basis:220px; width:220px; }
+ .app-sidebar-brand .brand-logo { width:34px; height:34px; flex-basis:34px; }
+ .app-sidebar-desktop .app-nav-link { gap:8px; padding-inline:9px; font-size:12px; }
+}
+@media (max-width: 767.98px) {
+ .census-app-layout { display:block; padding-bottom:calc(58px + env(safe-area-inset-bottom)); }
+ .app-sidebar-desktop { display:none; }
+ .app-phone-header { position:sticky; top:0; z-index:1999; display:flex; align-items:center; justify-content:space-between; gap:12px; min-height:62px; padding:10px 14px; background:linear-gradient(90deg,#251052,#3a1b78); box-shadow:0 3px 12px rgba(23,12,49,.15); }
+ .app-phone-header .app-sidebar-brand { flex:0 1 auto; }
+ .app-phone-header .app-brand-copy strong { font-size:11px; }
+ .app-phone-header .app-brand-copy small { font-size:8px; }
+ .phone-header-label { color:#e5dcf7; font-size:12px; white-space:nowrap; }
+ .app-mobile-bottom-nav { display:flex; position:fixed; z-index:2000; left:0; right:0; bottom:0; min-height:52px; padding:3px max(3px,env(safe-area-inset-right)) calc(5px + env(safe-area-inset-bottom)) max(3px,env(safe-area-inset-left)); gap:1px; overflow-x:auto; overflow-y:hidden; background:#251052; border-top:1px solid rgba(255,255,255,.15); box-shadow:0 -4px 18px rgba(23,12,49,.18); align-items:stretch; }
+ .app-mobile-bottom-nav .app-nav-link { flex:1 0 48px; min-width:48px; min-height:42px; flex-direction:column; justify-content:center; gap:1px; padding:3px 1px; font-size:8px; }
+ .app-mobile-bottom-nav .app-nav-link .nav-icon { flex-basis:auto; width:auto; font-size:14px; line-height:1; }
+ .app-mobile-bottom-nav .app-nav-link b { display:block; max-width:52px; font-size:8px; line-height:1.1; font-weight:600; text-align:center; }
+ .census-page-content { padding:12px 10px 14px; }
+ .stat-card { padding:12px; }
+ .census-stat .stat-icon { width:36px; height:36px; }
+ .stat-number { font-size:24px; }
+ .page-header { margin-bottom:1rem!important; }
+ .census-main .card-body { padding:clamp(12px,3vw,20px); }
+ .census-main .modal-dialog { width:calc(100% - 1rem); max-width:calc(100% - 1rem); margin:.5rem auto; }
+ .census-main .modal-content { max-height:calc(100svh - 1rem); }
+ .census-main .btn-group { flex-wrap:wrap; }
+}
+@media (max-width: 420px) {
+ .app-mobile-bottom-nav .app-nav-link { flex-basis:44px; min-width:44px; }
+ .app-mobile-bottom-nav .app-nav-link b { font-size:7px; }
+ .app-mobile-bottom-nav .app-nav-link .nav-icon { font-size:13px; }
+ .app-phone-header { padding-inline:9px; }
+ .app-phone-header .brand-logo { width:30px; height:30px; flex-basis:30px; }
+ .app-phone-header .app-sidebar-brand { gap:6px; }
+ .app-phone-header .app-brand-copy strong { font-size:9px; }
+ .app-phone-header .app-brand-copy small { font-size:7px; letter-spacing:.35px; }
+ .phone-header-label { font-size:10px; }
+ .census-main th, .census-main td { padding:.4rem; font-size:.7rem; }
+ .census-main .btn { padding:.35rem .5rem; }
+}
