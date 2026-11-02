@@ -1453,8 +1453,6 @@ app.use((error, req, res, next) => {
 // START SERVER
 // ==========================================
 
-app.listen(PORT, () => {
-  console.log(
-    `Barangay Census API running :${PORT}`
-  );
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server running on port ${PORT}`);
 });
