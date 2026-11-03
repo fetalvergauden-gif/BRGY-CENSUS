@@ -11,8 +11,6 @@ import * as XLSX from 'xlsx';
 
 import { API_ENDPOINTS } from '../config/api';
 
-fetch(API_ENDPOINTS.formSchema)
-
 const valueAt = (source, path) =>
     String(path || '')
         .split('.')
@@ -127,7 +125,7 @@ export default function ExportData() {
                 const token = await auth.currentUser?.getIdToken();
 
                 const response = await fetch(
-                    `${API_BASE}/api/form-schema`,
+                    API_ENDPOINTS.formSchema,
                     {
                         headers: token
                             ? { Authorization: `Bearer ${token}` }
