@@ -22,7 +22,7 @@ app.use(cors({
     // are allowed. Browser requests must match an explicitly configured origin.
     if (!origin) return callback(null, true);
 
-    const normalizedOrigin = origin.trim().replace(/\\/+$/, '');
+    const normalizedOrigin = origin.trim();
     if (allowedOrigins.includes(normalizedOrigin)) {
       return callback(null, true);
     }
