@@ -113,15 +113,45 @@ try {
 // MYSQL DATABASE CONNECTION
 // ==========================================
 
+// Aiven requires TLS. On Render, upload ca.pem as a Secret File
+// and set DB_SSL_CA_PATH=/etc/secrets/ca.pem.
+const DB_HOST = process.env.DB_HOST || '127.0.0.1';
+const DB_SSL_ENABLED =
+  process.env.DB_SSL === 'true' ||
+  DB_HOST.includes('aivencloud.com');
+
+let mysqlSsl;
+if (DB_SSL_ENABLED) {
+  const configuredCaPath = process.env.DB_SSL_CA_PATH || 'ca.pem';
+  const caPath = path.isAbsolute(configuredCaPath)
+    ? configuredCaPath
+    : path.resolve(BACKEND_DIR, configuredCaPath);
+
+  if (!fs.existsSync(caPath)) {
+    throw new Error(
+      `MySQL SSL is enabled but the CA certificate was not found: ${caPath}. ` +
+      'Add ca.pem to the backend folder or configure DB_SSL_CA_PATH.'
+    );
+  }
+
+  mysqlSsl = {
+    ca: fs.readFileSync(caPath, 'utf8'),
+    rejectUnauthorized: true
+  };
+  console.log('MySQL TLS enabled.');
+}
+
 const pool = mysql.createPool({
-  host: process.env.DB_HOST || '127.0.0.1',
+  host: DB_HOST,
   port: Number(process.env.DB_PORT || 3306),
   user: process.env.DB_USER || 'root',
   password: process.env.DB_PASSWORD || '',
-  database: process.env.DB_NAME || 'barangay_census_db',
+  database: process.env.DB_NAME || 'barangay_census_db_v2',
+  ...(mysqlSsl ? { ssl: mysqlSsl } : {}),
   waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0
+  connectionLimit: Number(process.env.DB_CONNECTION_LIMIT || 10),
+  queueLimit: 0,
+  connectTimeout: 20000
 });
 
 // ==========================================
@@ -367,11 +397,13 @@ function ensureHouseholdHeadInMembers(inputRecord = {}) {
 // AUTHENTICATION MIDDLEWARE
 // ==========================================
 
-async function authenticate(req, res, next) {
+// Verify Firebase identity without requiring an existing MySQL user row.
+// This allows first-time sign-ins to create their user profile.
+async function verifyFirebaseToken(req, res, next) {
   try {
-    const token = (
-      req.headers.authorization || ''
-    ).replace(/^Bearer\s+/i, '');
+    const token = (req.headers.authorization || '')
+      .replace(/^Bearer\\s+/i, '')
+      .trim();
 
     if (!token) {
       return res.status(401).json({
@@ -379,21 +411,11 @@ async function authenticate(req, res, next) {
       });
     }
 
-    req.firebaseUser = await admin
-      .auth()
-      .verifyIdToken(token);
-
-    const [rows] = await pool.execute(
-      'SELECT role FROM users WHERE firebase_uid = ? LIMIT 1',
-      [req.firebaseUser.uid]
-    );
-
-    req.userRole = rows[0]?.role || 'user';
-
-    next();
+    req.firebaseUser = await admin.auth().verifyIdToken(token);
+    return next();
   } catch (error) {
     console.error(
-      'Firebase authentication failed:',
+      'Firebase token verification failed:',
       error.code || 'AUTH_ERROR',
       error.message
     );
@@ -403,6 +425,27 @@ async function authenticate(req, res, next) {
       code: error.code || 'AUTH_ERROR'
     });
   }
+}
+
+// Protected API routes load the user's role from MySQL.
+async function authenticate(req, res, next) {
+  return verifyFirebaseToken(req, res, async () => {
+    try {
+      const [rows] = await pool.execute(
+        'SELECT role FROM users WHERE firebase_uid = ? LIMIT 1',
+        [req.firebaseUser.uid]
+      );
+
+      req.userRole = rows[0]?.role || 'user';
+      return next();
+    } catch (error) {
+      console.error('Unable to load user role from MySQL:', error);
+      return res.status(503).json({
+        message: 'Unable to verify user permissions because the database is unavailable.',
+        code: error.code || 'DATABASE_ERROR'
+      });
+    }
+  });
 }
 
 const requireAdmin = (req, res, next) => {
@@ -417,7 +460,7 @@ const requireAdmin = (req, res, next) => {
 // AUTH PROFILE SYNC
 // ==========================================
 
-app.post('/api/auth/sync', authenticate, async (req, res) => {
+app.post('/api/auth/sync', verifyFirebaseToken, async (req, res) => {
   const {
     displayName = '',
     email = ''
