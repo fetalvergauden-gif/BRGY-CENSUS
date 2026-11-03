@@ -3,13 +3,18 @@ import { useEffect, useMemo, useState } from 'react';
 import AdminLayout from '../components/AdminLayout';
 import { useCensus } from '../context/CensusContext';
 import { auth } from '../components/firebase';
+
 import {
     getStats,
     getAllResidents,
     getSitioStats
 } from '../utils/statistics';
 
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8080';
+import { API_ENDPOINTS } from '../config/api';
+
+// ==========================================
+// HELPERS
+// ==========================================
 
 const safe = (value) =>
     value === null || value === undefined || value === ''
@@ -21,7 +26,8 @@ const pathValue = (source, path) =>
         .split('.')
         .filter(Boolean)
         .reduce(
-            (value, key) => value == null ? undefined : value[key],
+            (value, key) =>
+                value == null ? undefined : value[key],
             source
         );
 
@@ -30,7 +36,7 @@ const yesNo = (value) =>
         ? value ? 'Yes' : 'No'
         : value;
 
-/* Get the actual household data, including JSON payloads */
+// Get the actual household data, including JSON payloads.
 function getRecordData(record) {
     let payload = record?.payload;
 
@@ -48,12 +54,26 @@ function getRecordData(record) {
     };
 }
 
-/* Exclude declaration and certification fields from reports */
+// ==========================================
+// EXCLUDE DECLARATION AND CERTIFICATION
+// ==========================================
+
 function isExcludedField(section, field) {
-    const sectionTitle = String(section?.title || '').toLowerCase().trim();
-    const label = String(field?.label || '').toLowerCase().trim();
-    const key = String(field?.key || '').toLowerCase().trim();
-    const path = String(field?.path || '').toLowerCase().trim();
+    const sectionTitle = String(
+        section?.title || ''
+    ).toLowerCase().trim();
+
+    const label = String(
+        field?.label || ''
+    ).toLowerCase().trim();
+
+    const key = String(
+        field?.key || ''
+    ).toLowerCase().trim();
+
+    const path = String(
+        field?.path || ''
+    ).toLowerCase().trim();
 
     const excludedSection =
         sectionTitle.includes('declaration') ||
@@ -80,22 +100,42 @@ function isExcludedField(section, field) {
         'certified'
     ].includes(path);
 
-    return excludedSection || excludedLabel || excludedKey || excludedPath;
+    return (
+        excludedSection ||
+        excludedLabel ||
+        excludedKey ||
+        excludedPath
+    );
 }
+
+// ==========================================
+// DYNAMIC REPORT COLUMNS
+// ==========================================
 
 function schemaColumns(schema) {
     return (schema?.sections || []).flatMap((section) =>
         (section.fields || [])
-            .filter((field) => !isExcludedField(section, field))
+            .filter(
+                (field) => !isExcludedField(section, field)
+            )
             .map((field) => ({
                 id: `${section.id || section.title}-${field.id || field.key || field.path}`,
-                sectionTitle: section.title || 'Additional Information',
-                label: field.label || field.key || field.path || 'Question',
+                sectionTitle:
+                    section.title || 'Additional Information',
+                label:
+                    field.label ||
+                    field.key ||
+                    field.path ||
+                    'Question',
                 field,
                 repeatable: section.repeatable || ''
             }))
     );
 }
+
+// ==========================================
+// GET ANSWERS FROM HOUSEHOLD RECORD
+// ==========================================
 
 function answerFor(record, column) {
     const data = getRecordData(record);
@@ -123,7 +163,9 @@ function answerFor(record, column) {
             value !== ''
         );
 
-        return values.length ? values.join('; ') : '—';
+        return values.length
+            ? values.join('; ')
+            : '—';
     }
 
     let value;
@@ -162,7 +204,10 @@ function answerFor(record, column) {
     return safe(value);
 }
 
-/* Get household head's first and last name */
+// ==========================================
+// HOUSEHOLD HEAD NAME
+// ==========================================
+
 function getNameParts(record) {
     const data = getRecordData(record);
 
@@ -189,7 +234,10 @@ function getNameParts(record) {
     };
 }
 
-/* Sort household number naturally */
+// ==========================================
+// SORT HOUSEHOLD NUMBERS
+// ==========================================
+
 function compareHouseholdNumbers(a, b) {
     return String(a || '').localeCompare(
         String(b || ''),
@@ -201,12 +249,17 @@ function compareHouseholdNumbers(a, b) {
     );
 }
 
+// ==========================================
+// BUILD HOUSEHOLD REPORT ROW
+// ==========================================
+
 function householdRow(record, columns) {
     const data = getRecordData(record);
     const address = data.address || {};
 
     return {
         id: data.id,
+
         householdNumber:
             data.householdNumber ||
             data.household_number ||
@@ -240,6 +293,10 @@ function householdRow(record, columns) {
     };
 }
 
+// ==========================================
+// REPORTS COMPONENT
+// ==========================================
+
 export default function Reports() {
     const {
         records = [],
@@ -247,8 +304,12 @@ export default function Reports() {
         recordsError
     } = useCensus();
 
-    const [schema, setSchema] = useState({ sections: [] });
+    const [schema, setSchema] = useState({
+        sections: []
+    });
+
     const [schemaError, setSchemaError] = useState('');
+
     const [view, setView] = useState('submissions');
     const [sitio, setSitio] = useState('All');
     const [year, setYear] = useState('All');
@@ -256,6 +317,10 @@ export default function Reports() {
 
     // Default: Last Name A-Z
     const [sortBy, setSortBy] = useState('lastNameAsc');
+
+    // ==========================================
+    // LOAD ACTIVE FORM SCHEMA
+    // ==========================================
 
     useEffect(() => {
         let alive = true;
@@ -265,10 +330,12 @@ export default function Reports() {
                 const token = await auth.currentUser?.getIdToken();
 
                 const response = await fetch(
-                    `${API_BASE}/api/form-schema`,
+                    API_ENDPOINTS.formSchema,
                     {
                         headers: token
-                            ? { Authorization: `Bearer ${token}` }
+                            ? {
+                                Authorization: `Bearer ${token}`
+                            }
                             : {}
                     }
                 );
@@ -288,12 +355,15 @@ export default function Reports() {
                             ? body
                             : { sections: [] }
                     );
+
                     setSchemaError('');
                 }
+
             } catch (error) {
                 if (alive) {
                     setSchemaError(
-                        error.message || 'Unable to load form questions.'
+                        error.message ||
+                        'Unable to load form questions.'
                     );
                 }
             }
@@ -306,12 +376,19 @@ export default function Reports() {
         };
     }, []);
 
+    // ==========================================
+    // DYNAMIC COLUMNS
+    // ==========================================
+
     const columns = useMemo(
         () => schemaColumns(schema),
         [schema]
     );
 
-    // Search and existing filters
+    // ==========================================
+    // SEARCH AND FILTER RECORDS
+    // ==========================================
+
     const filtered = useMemo(() => {
         return records.filter((record) => {
             const data = getRecordData(record);
@@ -332,8 +409,14 @@ export default function Reports() {
             const nameParts = getNameParts(record);
 
             const text = [
-                data.householdNumber || data.household_number || '',
-                data.householdHead || data.household_head || '',
+                data.householdNumber ||
+                data.household_number ||
+                '',
+
+                data.householdHead ||
+                data.household_head ||
+                '',
+
                 nameParts.firstName,
                 nameParts.lastName,
                 recordSitio
@@ -342,12 +425,18 @@ export default function Reports() {
             return (
                 (sitio === 'All' || recordSitio === sitio) &&
                 (year === 'All' || recordYear === year) &&
-                (!search || text.includes(search.toLowerCase().trim()))
+                (
+                    !search ||
+                    text.includes(search.toLowerCase().trim())
+                )
             );
         });
     }, [records, sitio, year, search]);
 
-    // Apply the selected sorting to household records
+    // ==========================================
+    // SORT HOUSEHOLD RECORDS
+    // ==========================================
+
     const sortedRecords = useMemo(() => {
         const result = [...filtered];
 
@@ -389,14 +478,20 @@ export default function Reports() {
 
                 case 'householdAsc':
                     return compareHouseholdNumbers(
-                        dataA.householdNumber || dataA.household_number,
-                        dataB.householdNumber || dataB.household_number
+                        dataA.householdNumber ||
+                        dataA.household_number,
+
+                        dataB.householdNumber ||
+                        dataB.household_number
                     );
 
                 case 'householdDesc':
                     return compareHouseholdNumbers(
-                        dataB.householdNumber || dataB.household_number,
-                        dataA.householdNumber || dataA.household_number
+                        dataB.householdNumber ||
+                        dataB.household_number,
+
+                        dataA.householdNumber ||
+                        dataA.household_number
                     );
 
                 default:
@@ -407,13 +502,23 @@ export default function Reports() {
         return result;
     }, [filtered, sortBy]);
 
+    // ==========================================
+    // STATISTICS
+    // ==========================================
+
     const stats = getStats(filtered);
     const residents = getAllResidents(filtered);
 
     const reportRows = useMemo(
-        () => sortedRecords.map((record) => householdRow(record, columns)),
+        () => sortedRecords.map(
+            (record) => householdRow(record, columns)
+        ),
         [sortedRecords, columns]
     );
+
+    // ==========================================
+    // AVAILABLE SITIOS
+    // ==========================================
 
     const sitios = [
         ...new Set(
@@ -429,14 +534,27 @@ export default function Reports() {
         )
     ].sort();
 
+    // ==========================================
+    // AVAILABLE CENSUS YEARS
+    // ==========================================
+
     const years = [
         ...new Set(
             records.map((record) => {
                 const data = getRecordData(record);
-                return String(data.censusYear || data.census_year || '');
+
+                return String(
+                    data.censusYear ||
+                    data.census_year ||
+                    ''
+                );
             }).filter(Boolean)
         )
     ].sort().reverse();
+
+    // ==========================================
+    // RESIDENT DISTRIBUTION
+    // ==========================================
 
     const distribution = (key) =>
         Object.entries(
@@ -449,9 +567,14 @@ export default function Reports() {
                             : resident[key] || 'Not specified';
 
                 acc[value] = (acc[value] || 0) + 1;
+
                 return acc;
             }, {})
         );
+
+    // ==========================================
+    // REPORT SUMMARY DATA
+    // ==========================================
 
     const summaryRows =
         view === 'sitio'
@@ -466,36 +589,70 @@ export default function Reports() {
                 '4Ps': row.fourPs
             }))
             : view === 'sex'
-                ? distribution('sex').map(([Category, Count]) => ({
-                    Category, Count
-                }))
+                ? distribution('sex').map(
+                    ([Category, Count]) => ({
+                        Category,
+                        Count
+                    })
+                )
                 : view === 'age'
-                    ? distribution('age').map(([Category, Count]) => ({
-                        Category, Count
-                    }))
+                    ? distribution('age').map(
+                        ([Category, Count]) => ({
+                            Category,
+                            Count
+                        })
+                    )
                     : view === 'civil'
-                        ? distribution('civilStatus').map(([Category, Count]) => ({
-                            Category, Count
-                        }))
+                        ? distribution('civilStatus').map(
+                            ([Category, Count]) => ({
+                                Category,
+                                Count
+                            })
+                        )
                         : view === 'education'
-                            ? distribution('educationalAttainment').map(([Category, Count]) => ({
-                                Category, Count
-                            }))
+                            ? distribution('educationalAttainment').map(
+                                ([Category, Count]) => ({
+                                    Category,
+                                    Count
+                                })
+                            )
                             : view === 'occupation'
-                                ? distribution('occupation').map(([Category, Count]) => ({
-                                    Category, Count
-                                }))
+                                ? distribution('occupation').map(
+                                    ([Category, Count]) => ({
+                                        Category,
+                                        Count
+                                    })
+                                )
                                 : [
-                                    { Category: 'Households', Count: stats.households },
-                                    { Category: 'Residents', Count: stats.population },
-                                    { Category: 'Senior Citizens', Count: stats.senior },
-                                    { Category: 'PWD', Count: stats.pwd },
-                                    { Category: '4Ps Beneficiaries', Count: stats.fourPs }
+                                    {
+                                        Category: 'Households',
+                                        Count: stats.households
+                                    },
+                                    {
+                                        Category: 'Residents',
+                                        Count: stats.population
+                                    },
+                                    {
+                                        Category: 'Senior Citizens',
+                                        Count: stats.senior
+                                    },
+                                    {
+                                        Category: 'PWD',
+                                        Count: stats.pwd
+                                    },
+                                    {
+                                        Category: '4Ps Beneficiaries',
+                                        Count: stats.fourPs
+                                    }
                                 ];
 
     const summaryHeaders = summaryRows.length
         ? Object.keys(summaryRows[0])
         : ['Category', 'Count'];
+
+    // ==========================================
+    // USER INTERFACE
+    // ==========================================
 
     return (
         <AdminLayout
@@ -503,17 +660,25 @@ export default function Reports() {
             title="Reports"
             subtitle="View submitted census answers and generate reports using the active Form Builder questions."
         >
+            {/* SEARCH AND FILTERS */}
+
             <div className="data-card mb-3">
                 <div className="d-flex flex-wrap align-items-end gap-3">
 
-                    <div className="flex-grow-1" style={{ minWidth: 220 }}>
+                    <div
+                        className="flex-grow-1"
+                        style={{ minWidth: 220 }}
+                    >
                         <label className="form-label fw-semibold">
                             Search household
                         </label>
+
                         <input
                             className="form-control"
                             value={search}
-                            onChange={(event) => setSearch(event.target.value)}
+                            onChange={(event) =>
+                                setSearch(event.target.value)
+                            }
                             placeholder="Household number, first name, last name or sitio"
                         />
                     </div>
@@ -522,12 +687,16 @@ export default function Reports() {
                         <label className="form-label fw-semibold">
                             Sitio
                         </label>
+
                         <select
                             className="form-select"
                             value={sitio}
-                            onChange={(event) => setSitio(event.target.value)}
+                            onChange={(event) =>
+                                setSitio(event.target.value)
+                            }
                         >
                             <option value="All">All</option>
+
                             {sitios.map((item) => (
                                 <option key={item} value={item}>
                                     {item}
@@ -540,12 +709,16 @@ export default function Reports() {
                         <label className="form-label fw-semibold">
                             Census Year
                         </label>
+
                         <select
                             className="form-select"
                             value={year}
-                            onChange={(event) => setYear(event.target.value)}
+                            onChange={(event) =>
+                                setYear(event.target.value)
+                            }
                         >
                             <option value="All">All</option>
+
                             {years.map((item) => (
                                 <option key={item} value={item}>
                                     {item}
@@ -558,15 +731,19 @@ export default function Reports() {
                         <label className="form-label fw-semibold">
                             Sort By
                         </label>
+
                         <select
                             className="form-select"
                             value={sortBy}
-                            onChange={(event) => setSortBy(event.target.value)}
+                            onChange={(event) =>
+                                setSortBy(event.target.value)
+                            }
                         >
                             <optgroup label="First Name">
                                 <option value="firstNameAsc">
                                     First Name (A–Z)
                                 </option>
+
                                 <option value="firstNameDesc">
                                     First Name (Z–A)
                                 </option>
@@ -576,6 +753,7 @@ export default function Reports() {
                                 <option value="lastNameAsc">
                                     Last Name (A–Z)
                                 </option>
+
                                 <option value="lastNameDesc">
                                     Last Name (Z–A)
                                 </option>
@@ -585,6 +763,7 @@ export default function Reports() {
                                 <option value="householdAsc">
                                     Lowest to Highest
                                 </option>
+
                                 <option value="householdDesc">
                                     Highest to Lowest
                                 </option>
@@ -595,7 +774,8 @@ export default function Reports() {
                 </div>
             </div>
 
-            {/* Statistics Cards */}
+            {/* STATISTICS CARDS */}
+
             <div className="row g-3 mb-3">
                 {[
                     ['Households', stats.households],
@@ -604,7 +784,10 @@ export default function Reports() {
                     ['PWD', stats.pwd],
                     ['4Ps Beneficiaries', stats.fourPs]
                 ].map(([label, value]) => (
-                    <div className="col-6 col-md-4 col-xl" key={label}>
+                    <div
+                        className="col-6 col-md-4 col-xl"
+                        key={label}
+                    >
                         <div className="stat-card census-stat h-100 d-flex justify-content-between align-items-center">
                             <span>{label}</span>
                             <b className="ms-auto">{value}</b>
@@ -613,10 +796,16 @@ export default function Reports() {
                 ))}
             </div>
 
+            {/* REPORT TABLE */}
+
             <div className="data-card mb-3">
+
                 <div className="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
                     <div>
-                        <h5 className="mb-1">Report Table</h5>
+                        <h5 className="mb-1">
+                            Report Table
+                        </h5>
+
                         <p className="text-secondary mb-0">
                             Dynamic columns are taken from the active Census Form Builder.
                         </p>
@@ -626,6 +815,8 @@ export default function Reports() {
                         {filtered.length} household records
                     </span>
                 </div>
+
+                {/* REPORT VIEW BUTTONS */}
 
                 <div className="d-flex flex-wrap gap-2 mb-3">
                     {[
@@ -640,6 +831,7 @@ export default function Reports() {
                     ].map(([key, label]) => (
                         <button
                             key={key}
+                            type="button"
                             className={`btn btn-sm ${
                                 view === key
                                     ? 'btn-primary'
@@ -651,6 +843,8 @@ export default function Reports() {
                         </button>
                     ))}
                 </div>
+
+                {/* LOADING AND ERROR STATES */}
 
                 {recordsLoading ? (
                     <div className="text-center py-5">
@@ -665,8 +859,12 @@ export default function Reports() {
                         Form schema could not be loaded: {schemaError}
                     </div>
                 ) : view === 'submissions' ? (
+
+                    /* SUBMITTED CENSUS ANSWERS */
+
                     <div className="table-responsive">
                         <table className="table table-hover table-bordered align-middle report-dynamic-table">
+
                             <thead className="table-light">
                                 <tr>
                                     <th>Household No.</th>
@@ -677,6 +875,7 @@ export default function Reports() {
                                     {columns.map((column) => (
                                         <th key={column.id}>
                                             <span>{column.label}</span>
+
                                             {column.repeatable && (
                                                 <small className="d-block text-secondary">
                                                     {column.sectionTitle}
@@ -690,17 +889,26 @@ export default function Reports() {
                             <tbody>
                                 {reportRows.length ? (
                                     reportRows.map((row) => (
-                                        <tr key={row.id || row.householdNumber}>
+                                        <tr
+                                            key={
+                                                row.id ||
+                                                row.householdNumber
+                                            }
+                                        >
                                             <td>{row.householdNumber}</td>
                                             <td>{row.householdHead}</td>
                                             <td>{row.sitio}</td>
                                             <td>{row.censusYear}</td>
 
-                                            {row.answers.map((answer, index) => (
-                                                <td key={`${row.id}-${columns[index].id}`}>
-                                                    {answer}
-                                                </td>
-                                            ))}
+                                            {row.answers.map(
+                                                (answer, index) => (
+                                                    <td
+                                                        key={`${row.id}-${columns[index].id}`}
+                                                    >
+                                                        {answer}
+                                                    </td>
+                                                )
+                                            )}
                                         </tr>
                                     ))
                                 ) : (
@@ -714,15 +922,23 @@ export default function Reports() {
                                     </tr>
                                 )}
                             </tbody>
+
                         </table>
                     </div>
+
                 ) : (
+
+                    /* SUMMARY REPORTS */
+
                     <div className="table-responsive">
                         <table className="table table-hover table-bordered align-middle">
+
                             <thead className="table-light">
                                 <tr>
                                     {summaryHeaders.map((header) => (
-                                        <th key={header}>{header}</th>
+                                        <th key={header}>
+                                            {header}
+                                        </th>
                                     ))}
                                 </tr>
                             </thead>
@@ -730,7 +946,9 @@ export default function Reports() {
                             <tbody>
                                 {summaryRows.length ? (
                                     summaryRows.map((row, index) => (
-                                        <tr key={`${row.Category || 'row'}-${index}`}>
+                                        <tr
+                                            key={`${row.Category || 'row'}-${index}`}
+                                        >
                                             {summaryHeaders.map((header) => (
                                                 <td key={header}>
                                                     {safe(row[header])}
@@ -749,6 +967,7 @@ export default function Reports() {
                                     </tr>
                                 )}
                             </tbody>
+
                         </table>
                     </div>
                 )}
@@ -758,6 +977,7 @@ export default function Reports() {
                         Repeatable section answers are displayed as semicolon-separated values for each household.
                     </small>
                 )}
+
             </div>
         </AdminLayout>
     );

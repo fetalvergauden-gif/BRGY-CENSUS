@@ -1,7 +1,11 @@
 import { useEffect, useState } from 'react'
 import AdminLayout from '../components/AdminLayout'
 import { auth } from '../components/firebase'
-const API=`${import.meta.env.VITE_API_URL||'http://localhost:8080'}/api/settings`
+
+import { API_ENDPOINTS } from '../config/api';
+
+const API = API_ENDPOINTS.settings;
+
 const defaults={barangayName:'Barangay San Isidro',municipality:'Quezon City',province:'Metro Manila',contactNumber:'',email:'',adminName:'Barangay Administrator',adminEmail:''}
 export default function Settings(){
  const [values,setValues]=useState(defaults);const [saved,setSaved]=useState(false);const [error,setError]=useState('');const [loading,setLoading]=useState(true);const [saving,setSaving]=useState(false)

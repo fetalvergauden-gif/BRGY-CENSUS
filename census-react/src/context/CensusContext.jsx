@@ -10,10 +10,12 @@ import {
 import { auth } from '../components/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 
-const API_BASE =
-    import.meta.env.VITE_API_URL || 'http://localhost:8080';
+import { API_ENDPOINTS } from '../config/api';
 
-const API_URL = `${API_BASE}/api/census`;
+// Centralized API endpoints
+const API_URL = API_ENDPOINTS.census;
+const ACTIVITY_LOGS_API = API_ENDPOINTS.activityLogs;
+const AUTH_SYNC_API = API_ENDPOINTS.authSync;
 
 const CensusContext = createContext(null);
 
@@ -95,15 +97,12 @@ export function CensusProvider({ children }) {
         try {
             const token = await getToken();
 
-            const response = await fetch(
-                `${API_BASE}/api/activity-logs`,
-                {
-                    method: 'GET',
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
+            const response = await fetch(ACTIVITY_LOGS_API, {
+                method: 'GET',
+                headers: {
+                    Authorization: `Bearer ${token}`
                 }
-            );
+            });
 
             const data = await getResponseData(response);
 
@@ -156,7 +155,7 @@ export function CensusProvider({ children }) {
 
                     // Sync Firebase user with MySQL users table.
                     const profileResponse = await fetch(
-                        `${API_BASE}/api/auth/sync`,
+                        AUTH_SYNC_API,
                         {
                             method: 'POST',
                             headers: {
@@ -216,7 +215,7 @@ export function CensusProvider({ children }) {
 
                         // Admin can access activity logs.
                         const logResponse = await fetch(
-                            `${API_BASE}/api/activity-logs`,
+                            ACTIVITY_LOGS_API,
                             {
                                 method: 'GET',
                                 headers: {
@@ -306,23 +305,12 @@ export function CensusProvider({ children }) {
             );
         }
 
-        /*
-         * IMPORTANT FIX:
-         *
-         * Regular users can submit census records,
-         * but they cannot access GET /api/census
-         * or GET /api/activity-logs.
-         *
-         * Only admins should refresh these resources.
-         */
-
+        // Only admins should refresh these resources.
         if (userRole === 'admin') {
             await refreshRecords();
             await refreshLogs();
         }
 
-        // Regular users receive the successful
-        // submission response without admin-only requests.
         return data;
     }
 

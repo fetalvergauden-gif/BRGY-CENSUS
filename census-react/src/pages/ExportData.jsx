@@ -9,7 +9,9 @@ import {
 } from '../utils/statistics';
 import * as XLSX from 'xlsx';
 
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8080';
+import { API_ENDPOINTS } from '../config/api';
+
+fetch(API_ENDPOINTS.formSchema)
 
 const valueAt = (source, path) =>
     String(path || '')

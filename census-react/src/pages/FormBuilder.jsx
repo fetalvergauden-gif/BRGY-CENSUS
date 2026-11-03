@@ -2,7 +2,9 @@ import { useEffect, useState } from 'react';
 import AdminLayout from '../components/AdminLayout';
 import { auth } from '../components/firebase';
 
-const API = `${import.meta.env.VITE_API_URL || 'http://localhost:8080'}/api/form-schema`;
+import { API_ENDPOINTS } from '../config/api';
+
+const API = API_ENDPOINTS.formSchema;
 
 const uid = () =>
     globalThis.crypto?.randomUUID?.() ||

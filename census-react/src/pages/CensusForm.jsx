@@ -3,7 +3,9 @@ import { auth } from '../components/firebase';
 import { useNavigate } from 'react-router-dom';
 import { useCensus } from '../context/CensusContext';
 
-const API = `${import.meta.env.VITE_API_URL || 'http://localhost:8080'}/api/form-schema`;
+import { API_ENDPOINTS } from '../config/api';
+
+const API = API_ENDPOINTS.formSchema;
 
 const today = () => new Date().toISOString().slice(0, 10);
 
