@@ -14,6 +14,7 @@ import {
 
 import './App.css'
 import { auth } from './components/firebase'
+import { API_ENDPOINTS } from './config/api'
 import { CensusProvider, useCensus } from './context/CensusContext'
 import LoadingScreen from './components/LoadingScreen'
 
@@ -60,7 +61,7 @@ function AppRoutes() {
 
       try {
         const token = await currentUser.getIdToken()
-        const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:8080'}/api/auth/sync`, {
+        const response = await fetch(API_ENDPOINTS.authSync, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
           body: JSON.stringify({ displayName: currentUser.displayName || '', email: currentUser.email || '' }),
@@ -71,7 +72,7 @@ function AppRoutes() {
       } catch (error) {
         console.error('Failed to load Firebase user role:', error)
         setRole(null)
-        setRoleError(error.message || 'Hindi ma-verify ang account sa server. Suriin ang Firebase Admin configuration.')
+        setRoleError(error.message || 'Hindi ma-verify ang account sa server. Suriin ang API URL at CORS settings sa Render at Netlify.')
       } finally {
         setRoleLoading(false)
         setAuthLoading(false)
@@ -162,7 +163,7 @@ function AppRoutes() {
           <h2 className="h5 fw-bold">Hindi ma-verify ang account</h2>
           <p className="text-secondary mb-3">Nakapasok ang Firebase Authentication, pero hindi nakumpleto ang user synchronization sa MySQL.</p>
           <div className="alert alert-danger" role="alert">{roleError}</div>
-          <p className="small text-secondary">Tiyaking naka-configure ang bagong Firebase Admin service-account key sa backend at pareho ang Firebase project ID ng frontend at backend.</p>
+          <p className="small text-secondary">Tiyaking tama ang VITE_API_URL sa Netlify, naka-allow ang Netlify domain sa CORS_ORIGIN ng Render, at pareho ang Firebase project ID ng frontend at backend.</p>
           <button className="btn btn-primary" onClick={() => signOut(auth)}>Mag-sign out at subukan muli</button>
         </section>
       </main>
