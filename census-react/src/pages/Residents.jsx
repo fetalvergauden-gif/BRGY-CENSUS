@@ -1,6 +1,7 @@
 
 import { useMemo, useState } from 'react';
 import AdminLayout from '../components/AdminLayout';
+import ConfirmDialog from '../components/ConfirmDialog';
 import { useCensus } from '../context/CensusContext';
 
 export default function Residents() {
@@ -551,199 +552,17 @@ export default function Residents() {
                 </div>
             </div>
 
-            {/* DELETE CONFIRMATION MODAL */}
-            {selectedResident && (
-                <div
-                    className="resident-modal-backdrop"
-                    onMouseDown={(event) => {
-                        if (event.target === event.currentTarget) {
-                            closeDeleteConfirmation();
-                        }
-                    }}
-                >
-                    <div
-                        className="resident-confirm-modal"
-                        role="dialog"
-                        aria-modal="true"
-                        aria-labelledby="deleteResidentTitle"
-                    >
-                        <div className="resident-modal-icon">
-                            <i className="bi bi-trash3-fill"></i>
-                        </div>
-
-                        <h5
-                            id="deleteResidentTitle"
-                            className="fw-bold text-center mb-2"
-                        >
-                            Delete Resident?
-                        </h5>
-
-                        <p className="text-muted text-center mb-4">
-                            Are you sure you want to permanently delete this resident?
-                            This action cannot be undone.
-                        </p>
-
-                        <div className="resident-info-box">
-                            <div className="d-flex align-items-center gap-3">
-                                <div className="resident-avatar">
-                                    <i className="bi bi-person-fill"></i>
-                                </div>
-
-                                <div className="overflow-hidden">
-                                    <div className="fw-bold text-dark text-break">
-                                        {selectedResident.fullName}
-                                    </div>
-
-                                    <small className="text-muted">
-                                        Household: {selectedResident.householdNumber}
-                                    </small>
-
-                                    <small className="text-muted d-block">
-                                        Sitio: {selectedResident.sitio}
-                                    </small>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="resident-warning">
-                            <i className="bi bi-info-circle-fill me-2"></i>
-                            Only this resident will be deleted. Other household members will remain.
-                        </div>
-
-                        <div className="d-flex gap-2 mt-4">
-                            <button
-                                type="button"
-                                className="btn btn-light flex-fill border"
-                                onClick={closeDeleteConfirmation}
-                                disabled={deleting}
-                            >
-                                Cancel
-                            </button>
-
-                            <button
-                                type="button"
-                                className="btn btn-danger flex-fill"
-                                onClick={confirmDeleteResident}
-                                disabled={deleting}
-                            >
-                                {deleting ? (
-                                    <>
-                                        <span className="spinner-border spinner-border-sm me-2"></span>
-                                        Deleting...
-                                    </>
-                                ) : (
-                                    <>
-                                        <i className="bi bi-trash3 me-2"></i>
-                                        Yes, Delete
-                                    </>
-                                )}
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
-
-            {/* MODAL STYLES */}
-            <style>{`
-                .resident-modal-backdrop {
-                    position: fixed;
-                    inset: 0;
-                    z-index: 2000;
-                    background: rgba(15, 23, 42, 0.58);
-                    backdrop-filter: blur(4px);
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    padding: 20px;
-                    animation: residentFadeIn 0.18s ease;
-                }
-
-                .resident-confirm-modal {
-                    width: 100%;
-                    max-width: 430px;
-                    background: #ffffff;
-                    border-radius: 18px;
-                    padding: 28px;
-                    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.22);
-                    animation: residentSlideUp 0.2s ease;
-                }
-
-                .resident-modal-icon {
-                    width: 62px;
-                    height: 62px;
-                    margin: 0 auto 18px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    border-radius: 50%;
-                    background: #fff0f0;
-                    color: #dc3545;
-                    font-size: 26px;
-                }
-
-                .resident-info-box {
-                    background: #f8f9fc;
-                    border: 1px solid #e9edf3;
-                    border-radius: 12px;
-                    padding: 14px;
-                }
-
-                .resident-avatar {
-                    width: 44px;
-                    height: 44px;
-                    flex-shrink: 0;
-                    border-radius: 12px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    background: #eeeaff;
-                    color: #6f42c1;
-                    font-size: 21px;
-                }
-
-                .resident-warning {
-                    background: #fff8e6;
-                    color: #856404;
-                    border: 1px solid #ffe7a3;
-                    border-radius: 10px;
-                    padding: 11px 12px;
-                    font-size: 12px;
-                    line-height: 1.5;
-                    margin-top: 14px;
-                }
-
-                .resident-confirm-modal .btn {
-                    min-height: 42px;
-                    border-radius: 9px;
-                    font-weight: 600;
-                }
-
-                @keyframes residentFadeIn {
-                    from {
-                        opacity: 0;
-                    }
-                    to {
-                        opacity: 1;
-                    }
-                }
-
-                @keyframes residentSlideUp {
-                    from {
-                        opacity: 0;
-                        transform: translateY(12px) scale(0.98);
-                    }
-                    to {
-                        opacity: 1;
-                        transform: translateY(0) scale(1);
-                    }
-                }
-
-                @media (max-width: 480px) {
-                    .resident-confirm-modal {
-                        padding: 22px;
-                    }
-                }
-            `}</style>
+            <ConfirmDialog
+                open={Boolean(selectedResident)}
+                title="Delete resident?"
+                message="This resident will be permanently removed from the household record. Other household members will remain."
+                details={selectedResident ? `${selectedResident.fullName} · Household: ${selectedResident.householdNumber} · Sitio: ${selectedResident.sitio}` : ''}
+                confirmLabel="Yes, Delete Resident"
+                tone="danger"
+                loading={deleting}
+                onCancel={closeDeleteConfirmation}
+                onConfirm={confirmDeleteResident}
+            />
         </AdminLayout>
     );
 }
