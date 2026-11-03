@@ -11,9 +11,28 @@ import { fileURLToPath } from 'node:url';
 const app = express();
 const PORT = Number(process.env.PORT || 8080);
 
+const allowedOrigins = (process.env.CORS_ORIGIN || 'http://localhost:5173')
+  .split(',')
+  .map((origin) => origin.trim().replace(/\\/+$/, ''))
+  .filter(Boolean);
+
 app.use(cors({
-  origin: (process.env.CORS_ORIGIN || 'http://localhost:5173').split(','),
-  credentials: true
+  origin(origin, callback) {
+    // Requests without an Origin header (health checks and server-to-server calls)
+    // are allowed. Browser requests must match an explicitly configured origin.
+    if (!origin) return callback(null, true);
+
+    const normalizedOrigin = origin.trim().replace(/\\/+$/, '');
+    if (allowedOrigins.includes(normalizedOrigin)) {
+      return callback(null, true);
+    }
+
+    console.warn('CORS blocked request from origin:', normalizedOrigin);
+    return callback(new Error('Origin is not allowed by CORS.'));
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 app.use(express.json({ limit: '5mb' }));
