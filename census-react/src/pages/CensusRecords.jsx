@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AdminLayout from '../components/AdminLayout';
+import ConfirmDialog from '../components/ConfirmDialog';
 import { useCensus } from '../context/CensusContext';
 
 const today = () => new Date().toISOString().slice(0, 10);
@@ -351,6 +352,7 @@ export default function CensusRecords({ onView }) {
     const [notice, setNotice] = useState('');
     const [error, setError] = useState('');
     const [saving, setSaving] = useState(false);
+    const [confirmSave, setConfirmSave] = useState(false);
 
     const normalizedRecords = useMemo(
         () => records.map((record) => getRecordData(record)),
@@ -500,8 +502,12 @@ export default function CensusRecords({ onView }) {
         }
     }
 
-    async function handleSave(event) {
+    function handleSave(event) {
         event.preventDefault();
+        setConfirmSave(true);
+    }
+
+    async function performSave() {
 
         setError('');
         setNotice('');
@@ -608,6 +614,7 @@ export default function CensusRecords({ onView }) {
 
             setModalType('');
             setEditing(null);
+            setConfirmSave(false);
         } catch (saveError) {
             setError(
                 saveError?.message ||
@@ -1207,62 +1214,28 @@ export default function CensusRecords({ onView }) {
                 </ModalShell>
             )}
 
-            {/* DELETE CONFIRMATION */}
-            {deleting && (
-                <ModalShell
-                    title="Confirm Delete"
-                    onClose={() => !saving && setDeleting(null)}
-                >
-                    <div className="modal-body py-4 text-center">
-                        <div
-                            className="mx-auto mb-3 d-flex align-items-center justify-content-center rounded-circle"
-                            style={{
-                                width: 64,
-                                height: 64,
-                                background: '#fef2f2',
-                                color: '#dc2626',
-                                fontSize: 28,
-                            }}
-                        >
-                            <i className="bi bi-exclamation-triangle" />
-                        </div>
+            <ConfirmDialog
+                open={confirmSave}
+                title={modalType === 'add' ? 'Add household record?' : 'Save changes?'}
+                message={modalType === 'add' ? 'Please confirm that you want to add this household record to the census database.' : 'Please confirm that you want to update this household record.'}
+                details={`${form.householdNumber || 'Household number not set'} — ${form.householdHead || 'Household head not set'}`}
+                confirmLabel={modalType === 'add' ? 'Yes, Add Record' : 'Yes, Save Changes'}
+                loading={saving}
+                onCancel={() => setConfirmSave(false)}
+                onConfirm={performSave}
+            />
 
-                        <h5 className="fw-bold">
-                            Are you sure you want to delete this information?
-                        </h5>
-
-                        <p className="text-secondary mb-1">
-                            This will permanently remove the census record from the system.
-                        </p>
-
-                        <p className="fw-bold mb-0">
-                            {deleting.householdNumber || '—'} —{' '}
-                            {deleting.householdHead || '—'}
-                        </p>
-                    </div>
-
-                    <div className="modal-footer justify-content-center bg-light">
-                        <button
-                            type="button"
-                            className="btn btn-outline-secondary px-4"
-                            disabled={saving}
-                            onClick={() => setDeleting(null)}
-                        >
-                            Cancel
-                        </button>
-
-                        <button
-                            type="button"
-                            className="btn btn-danger px-4"
-                            disabled={saving}
-                            onClick={confirmDelete}
-                        >
-                            <i className="bi bi-trash me-2" />
-                            {saving ? 'Deleting...' : 'Yes, Delete'}
-                        </button>
-                    </div>
-                </ModalShell>
-            )}
+            <ConfirmDialog
+                open={Boolean(deleting)}
+                title="Delete household record?"
+                message="This action permanently removes the household census record. This cannot be undone."
+                details={deleting ? `${deleting.householdNumber || '—'} — ${deleting.householdHead || '—'}` : ''}
+                confirmLabel="Yes, Delete"
+                tone="danger"
+                loading={saving}
+                onCancel={() => !saving && setDeleting(null)}
+                onConfirm={confirmDelete}
+            />
         </AdminLayout>
     );
 }
