@@ -402,7 +402,7 @@ function ensureHouseholdHeadInMembers(inputRecord = {}) {
 async function verifyFirebaseToken(req, res, next) {
   try {
     const token = (req.headers.authorization || '')
-      .replace(/^Bearer\\s+/i, '')
+      .replace(/^Bearer\s+/i, '')
       .trim();
 
     if (!token) {
