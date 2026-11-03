@@ -485,7 +485,7 @@ app.post('/api/auth/sync', verifyFirebaseToken, async (req, res) => {
     email = ''
   } = req.body || {};
 
-  await pool.execute(
+  const [userInsert] = await pool.execute(
     `INSERT INTO users
       (firebase_uid, display_name, email, role)
      VALUES (?, ?, ?, 'user')
@@ -498,6 +498,25 @@ app.post('/api/auth/sync', verifyFirebaseToken, async (req, res) => {
       email || req.firebaseUser.email || ''
     ]
   );
+
+  // Record newly created accounts in the admin activity log.
+  // affectedRows === 1 means a new row was inserted; an existing
+  // account signing in again will not create a duplicate registration log.
+  if (userInsert.affectedRows === 1) {
+    await pool.execute(
+      `INSERT INTO activity_logs
+       (firebase_uid, user_label, action, module_name, record_ref, status)
+       VALUES (?, ?, ?, ?, ?, ?)`,
+      [
+        req.firebaseUser.uid,
+        displayName || req.firebaseUser.name || email || req.firebaseUser.email || 'User',
+        'Created account',
+        'Authentication',
+        email || req.firebaseUser.email || 'New account',
+        'Success'
+      ]
+    );
+  }
 
   const [rows] = await pool.execute(
     `SELECT firebase_uid, display_name, email, role
