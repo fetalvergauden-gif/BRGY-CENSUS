@@ -7,3 +7,26 @@ body { min-height: 100svh; }
 #root { width: 100%; min-height: 100svh; text-align: left; }
 a { text-decoration: none; }
 button { cursor: pointer; }
+
+
+/* Shared confirmation dialog and responsive admin cards */
+.census-confirm-backdrop{position:fixed;inset:0;z-index:3000;display:grid;place-items:center;padding:18px;background:rgba(24,12,48,.58);backdrop-filter:blur(5px);animation:censusConfirmFade .16s ease}
+.census-confirm-dialog{width:min(100%,440px);max-height:calc(100svh - 36px);overflow:auto;background:#fff;border:1px solid #eee8fb;border-radius:20px;padding:clamp(20px,4vw,30px);box-shadow:0 24px 80px rgba(25,12,50,.25);text-align:center;animation:censusConfirmUp .2s ease}
+.census-confirm-icon{width:58px;height:58px;margin:0 auto 16px;border-radius:18px;display:grid;place-items:center;font-size:25px}
+.census-confirm-icon.is-primary{background:#f0eaff;color:#6d28d9}.census-confirm-icon.is-danger{background:#fff0f0;color:#dc3545}
+.census-confirm-dialog h5{color:#28134c;font-weight:800;margin:0 0 8px;font-size:clamp(17px,2vw,20px)}
+.census-confirm-message{color:#64748b;font-size:14px;line-height:1.6;margin:0}
+.census-confirm-details{margin-top:14px;padding:12px 14px;text-align:left;border:1px solid #e9e2f7;background:#faf8ff;border-radius:12px;color:#43345d;font-size:13px;overflow-wrap:anywhere}
+.census-confirm-actions{display:flex;gap:10px;margin-top:22px}
+.census-confirm-actions .btn{flex:1;min-height:43px;border-radius:11px;font-weight:700;font-size:13px}
+.census-confirm-cancel{background:#fff;border:1px solid #dbe1ea;color:#475569}.census-confirm-cancel:hover{background:#f8fafc}
+.census-confirm-primary{background:linear-gradient(135deg,#5b21b6,#7c3aed);color:#fff;border:0}.census-confirm-primary:hover{color:#fff;filter:brightness(1.06)}
+.census-confirm-danger{background:#dc3545;color:#fff;border:0}.census-confirm-danger:hover{background:#bb2d3b;color:#fff}
+.census-main .data-card,.census-main .stat-card,.census-main .card{min-width:0;width:100%;max-width:100%;border-radius:16px}
+.census-main .data-card{padding:clamp(14px,2vw,24px);overflow:hidden}
+.census-main .row{--bs-gutter-x:clamp(.65rem,1.5vw,1.5rem)}
+.census-main .stat-card{height:100%;padding:clamp(13px,1.8vw,22px)}
+.census-main .card-body{min-width:0}
+@keyframes censusConfirmFade{from{opacity:0}to{opacity:1}}
+@keyframes censusConfirmUp{from{opacity:0;transform:translateY(10px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+@media(max-width:575.98px){.census-confirm-backdrop{padding:12px}.census-confirm-dialog{border-radius:16px;padding:20px 16px}.census-confirm-actions{flex-direction:column-reverse}.census-confirm-actions .btn{width:100%}.census-main .data-card{border-radius:13px}.census-main .stat-card{min-height:100px}}
