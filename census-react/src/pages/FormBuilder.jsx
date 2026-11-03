@@ -296,14 +296,15 @@ export default function FormBuilder() {
         });
     };
 
-    const save = async () => {
-        const confirmed = window.confirm(
-            'Are you sure you want to save these changes?\n\n' +
-            'The updated Census Form will be applied to the user form.'
-        );
+    const save = () => setConfirmation({
+        title: 'Save census form changes?',
+        message: 'The updated Census Form will be applied to the user form.',
+        confirmLabel: 'Yes, Save Form',
+        tone: 'primary',
+        action: performSave
+    });
 
-        if (!confirmed) return;
-
+    const performSave = async () => {
         setSaving(true);
         setError('');
         setNotice('');
