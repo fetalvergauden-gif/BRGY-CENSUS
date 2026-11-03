@@ -357,15 +357,15 @@ export default function FormBuilder() {
                 <button
                     type="button"
                     className="btn btn-primary"
-                    onClick={() =>
-                        setSchema((current) => ({
+                    onClick={() => setConfirmation({
+                        title: 'Add a new section?',
+                        message: 'A new section will be added to the census form builder.',
+                        confirmLabel: 'Yes, Add Section',
+                        action: () => setSchema((current) => ({
                             ...current,
-                            sections: [
-                                ...current.sections,
-                                blankSection()
-                            ]
+                            sections: [...current.sections, blankSection()]
                         }))
-                    }
+                    })}
                 >
                     ＋ Add Section
                 </button>
@@ -373,16 +373,18 @@ export default function FormBuilder() {
                 <button
                     type="button"
                     className="btn btn-outline-primary"
-                    onClick={() => {
-                        if (!schema.sections.length) {
-                            setSchema({
-                                sections: [blankSection()]
-                            });
-                            return;
+                    onClick={() => setConfirmation({
+                        title: 'Add a new question?',
+                        message: 'A new question will be added to the first form section.',
+                        confirmLabel: 'Yes, Add Question',
+                        action: () => {
+                            if (!schema.sections.length) {
+                                setSchema({ sections: [blankSection()] });
+                                return;
+                            }
+                            addField(schema.sections[0].id);
                         }
-
-                        addField(schema.sections[0].id);
-                    }}
+                    })}
                 >
                     ＋ Add Question
                 </button>
@@ -627,7 +629,13 @@ export default function FormBuilder() {
                     <button
                         type="button"
                         className="btn btn-sm btn-outline-primary mt-3"
-                        onClick={() => addField(section.id)}
+                        onClick={() => setConfirmation({
+                            title: 'Add a question to this section?',
+                            message: 'A new question will be added to this section.',
+                            details: section.title,
+                            confirmLabel: 'Yes, Add Question',
+                            action: () => addField(section.id)
+                        })}
                     >
                         ＋ Add question to this section
                     </button>
