@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import AdminLayout from '../components/AdminLayout';
+import ConfirmDialog from '../components/ConfirmDialog';
 import { auth } from '../components/firebase';
 
 import { API_ENDPOINTS } from '../config/api';
@@ -224,6 +225,7 @@ export default function FormBuilder() {
     const [saving, setSaving] = useState(false);
     const [notice, setNotice] = useState('');
     const [error, setError] = useState('');
+    const [confirmation, setConfirmation] = useState(null);
 
     useEffect(() => {
         let active = true;
@@ -462,18 +464,19 @@ export default function FormBuilder() {
                         <button
                             type="button"
                             className="btn btn-sm btn-outline-danger"
-                            onClick={() => {
-                                if (!window.confirm(
-                                    `Delete the "${section.title}" section and all its questions?`
-                                )) return;
-
-                                setSchema((current) => ({
+                            onClick={() => setConfirmation({
+                                title: 'Delete this section?',
+                                message: 'This section and all its questions will be removed from the form builder.',
+                                details: section.title,
+                                confirmLabel: 'Yes, Delete Section',
+                                tone: 'danger',
+                                action: () => setSchema((current) => ({
                                     ...current,
                                     sections: current.sections.filter(
                                         (item) => item.id !== section.id
                                     )
-                                }));
-                            }}
+                                }))
+                            })}
                         >
                             Delete section
                         </button>
@@ -590,17 +593,18 @@ export default function FormBuilder() {
                                             <button
                                                 type="button"
                                                 className="btn btn-outline-danger w-100"
-                                                onClick={() => {
-                                                    if (!window.confirm(
-                                                        `Delete the question "${field.label}"?`
-                                                    )) return;
-
-                                                    patchSection(section.id, {
+                                                onClick={() => setConfirmation({
+                                                    title: 'Delete this question?',
+                                                    message: 'This question will be removed from the census form configuration.',
+                                                    details: field.label,
+                                                    confirmLabel: 'Yes, Delete Question',
+                                                    tone: 'danger',
+                                                    action: () => patchSection(section.id, {
                                                         fields: section.fields.filter(
                                                             (item) => item.id !== field.id
                                                         )
-                                                    });
-                                                }}
+                                                    })
+                                                })}
                                                 title="Delete question"
                                             >
                                                 ✕
@@ -641,6 +645,21 @@ export default function FormBuilder() {
                         : 'Save Entire Census Form'}
                 </button>
             </div>
+            <ConfirmDialog
+                open={Boolean(confirmation)}
+                title={confirmation?.title}
+                message={confirmation?.message}
+                details={confirmation?.details || ''}
+                confirmLabel={confirmation?.confirmLabel || 'Confirm'}
+                tone={confirmation?.tone || 'primary'}
+                loading={saving}
+                onCancel={() => !saving && setConfirmation(null)}
+                onConfirm={async () => {
+                    if (!confirmation?.action) return;
+                    await confirmation.action();
+                    setConfirmation(null);
+                }}
+            />
         </AdminLayout>
     );
 }
