@@ -13,7 +13,7 @@ const PORT = Number(process.env.PORT || 8080);
 
 const allowedOrigins = (process.env.CORS_ORIGIN || 'http://localhost:5173')
   .split(',')
-  .map((origin) => origin.trim().replace(/\\/+$/, ''))
+  .map((origin) => origin.trim())
   .filter(Boolean);
 
 app.use(cors({
