@@ -185,24 +185,24 @@ function SitioBarGraph({ data }) {
         )
     );
 
-    const chartHeight = 310;
-    const chartWidth = Math.max(760, data.length * 210);
-    const left = 52;
-    const bottom = 58;
-    const top = 24;
+    const chartHeight = 245;
+    const chartWidth = Math.max(620, data.length * 170);
+    const left = 42;
+    const bottom = 46;
+    const top = 18;
     const plotHeight = chartHeight - top - bottom;
     const groupWidth = (chartWidth - left - 24) / data.length;
     const barGap = 3;
     const barWidth = Math.max(
         5,
-        Math.min(18, (groupWidth - 26) / metrics.length - barGap)
+        Math.min(14, (groupWidth - 20) / metrics.length - barGap)
     );
 
     const yTicks = 5;
 
     return (
         <div className="sitio-chart overflow-auto">
-            <div className="d-flex flex-wrap gap-3 mb-3" aria-label="Chart legend">
+            <div className="d-flex flex-wrap gap-2 mb-2" aria-label="Chart legend">
                 {metrics.map((metric) => (
                     <div
                         className="d-flex align-items-center gap-2 small"
@@ -228,7 +228,7 @@ function SitioBarGraph({ data }) {
                 aria-label="Vertical bar chart showing statistics by sitio"
                 style={{
                     width: '100%',
-                    minWidth: 720,
+                    minWidth: 600,
                     display: 'block',
                     overflow: 'visible',
                 }}
@@ -340,7 +340,7 @@ function SitioBarGraph({ data }) {
                                                 x={x + barWidth / 2}
                                                 y={Math.max(15, y - 6)}
                                                 textAnchor="middle"
-                                                fontSize="10"
+                                                fontSize="9"
                                                 fontWeight="700"
                                                 fill="#4a4455"
                                                 style={{
@@ -363,7 +363,7 @@ function SitioBarGraph({ data }) {
                                 x={groupX + groupWidth / 2}
                                 y={chartHeight - 22}
                                 textAnchor="middle"
-                                fontSize="12"
+                                fontSize="11"
                                 fontWeight="600"
                                 fill="#4a4455"
                             >
