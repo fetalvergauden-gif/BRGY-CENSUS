@@ -67,12 +67,15 @@ function AppRoutes() {
           body: JSON.stringify({ displayName: currentUser.displayName || '', email: currentUser.email || '' }),
         })
         const profile = await response.json().catch(() => ({}))
-        if (!response.ok) throw new Error(profile.message || 'Unable to load your MySQL user profile.')
+        if (!response.ok) {
+          throw new Error(profile.message || 'AUTH_SYNC_FAILED')
+        }
         setRole(profile.role === 'admin' ? 'admin' : 'user')
       } catch (error) {
+        // Keep technical details in the browser console only.
         console.error('Failed to load Firebase user role:', error)
         setRole(null)
-        setRoleError(error.message || 'Hindi ma-verify ang account sa server. Suriin ang API URL at CORS settings sa Render at Netlify.')
+        setRoleError('ACCOUNT_VERIFICATION_FAILED')
       } finally {
         setRoleLoading(false)
         setAuthLoading(false)
@@ -159,12 +162,20 @@ function AppRoutes() {
   if (user && roleError) {
     return (
       <main className="min-vh-100 d-flex align-items-center justify-content-center p-4 bg-light">
-        <section className="card border-0 shadow-sm p-4" style={{ maxWidth: 520, width: '100%' }}>
-          <h2 className="h5 fw-bold">Hindi ma-verify ang account</h2>
-          <p className="text-secondary mb-3">Nakapasok ang Firebase Authentication, pero hindi nakumpleto ang user synchronization sa MySQL.</p>
-          <div className="alert alert-danger" role="alert">{roleError}</div>
-          <p className="small text-secondary">Tiyaking tama ang VITE_API_URL sa Netlify, naka-allow ang Netlify domain sa CORS_ORIGIN ng Render, at pareho ang Firebase project ID ng frontend at backend.</p>
-          <button className="btn btn-primary" onClick={() => signOut(auth)}>Mag-sign out at subukan muli</button>
+        <section className="card border-0 shadow-sm p-4 text-center" style={{ maxWidth: 440, width: '100%' }}>
+          <div
+            className="mx-auto mb-3 d-flex align-items-center justify-content-center rounded-circle"
+            style={{ width: 56, height: 56, background: '#f3e8ff', color: '#7c3aed', fontSize: 24 }}
+          >
+            !
+          </div>
+          <h2 className="h5 fw-bold">Unable to continue</h2>
+          <p className="text-secondary mb-4">
+            We couldn't complete your account verification. Please try again later.
+          </p>
+          <button className="btn btn-primary w-100" onClick={() => signOut(auth)}>
+            RETURN TO LOGIN
+          </button>
         </section>
       </main>
     )
