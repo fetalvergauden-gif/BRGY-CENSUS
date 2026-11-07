@@ -485,7 +485,8 @@ app.post('/api/auth/sync', verifyFirebaseToken, async (req, res) => {
     email = ''
   } = req.body || {};
 
-  const [userInsert] = await pool.execute(
+  try {
+    const [userInsert] = await pool.execute(
     `INSERT INTO users
       (firebase_uid, display_name, email, role)
      VALUES (?, ?, ?, 'user')
@@ -525,7 +526,19 @@ app.post('/api/auth/sync', verifyFirebaseToken, async (req, res) => {
     [req.firebaseUser.uid]
   );
 
-  res.json(rows[0]);
+    return res.json(rows[0]);
+  } catch (error) {
+    // Keep database diagnostics in server logs only.
+    console.error('Auth profile synchronization failed:', {
+      code: error.code || 'DATABASE_ERROR',
+      message: error.message,
+      firebaseUid: req.firebaseUser?.uid || null
+    });
+
+    return res.status(500).json({
+      message: 'Unable to complete account verification.'
+    });
+  }
 });
 
 // ==========================================
