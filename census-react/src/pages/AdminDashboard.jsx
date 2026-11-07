@@ -1,5 +1,5 @@
 
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import AdminLayout from '../components/AdminLayout';
 import { useCensus } from '../context/CensusContext';
 import {
@@ -9,6 +9,7 @@ import {
 
 export default function AdminDashboard() {
     const { records } = useCensus();
+    const [selectedSitio, setSelectedSitio] = useState('all');
 
     const s = useMemo(
         () => getStats(records),
@@ -19,6 +20,16 @@ export default function AdminDashboard() {
         () => getSitioStats(records),
         [records]
     );
+
+    const selectedData =
+        selectedSitio === 'all'
+            ? ss
+            : ss.filter((row) => row.sitio === selectedSitio);
+
+    const chartTitle =
+        selectedSitio === 'all'
+            ? 'Barangay Statistics Overview'
+            : 'Statistics for ' + selectedSitio;
 
     return (
         <AdminLayout
@@ -58,17 +69,52 @@ export default function AdminDashboard() {
             <div className="row g-4">
                 <div className="col-12 col-xl-7">
                     <div className="data-card">
-                        <h5 className="mb-1">Statistics by Sitio</h5>
-                        <p className="text-secondary small mb-4">
-                            Compare census statistics for every sitio.
-                        </p>
+                        <div className="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
+                            <div>
+                                <h5 className="mb-1">{chartTitle}</h5>
+                                <p className="text-secondary small mb-0">
+                                    {selectedSitio === 'all'
+                                        ? 'Overview of all census statistics across the barangay.'
+                                        : 'Showing census statistics for the selected sitio.'}
+                                </p>
+                            </div>
 
-                        {ss.length === 0 ? (
+                            <div style={{ minWidth: 190 }}>
+                                <label
+                                    htmlFor="sitio-select"
+                                    className="form-label small fw-semibold mb-1"
+                                >
+                                    View data
+                                </label>
+                                <select
+                                    id="sitio-select"
+                                    className="form-select form-select-sm"
+                                    value={selectedSitio}
+                                    onChange={(e) =>
+                                        setSelectedSitio(e.target.value)
+                                    }
+                                >
+                                    <option value="all">
+                                        Barangay Overview
+                                    </option>
+                                    {ss.map((row) => (
+                                        <option
+                                            value={row.sitio}
+                                            key={row.sitio}
+                                        >
+                                            {row.sitio}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                        </div>
+
+                        {selectedData.length === 0 ? (
                             <div className="text-center text-secondary py-5">
                                 No sitio statistics available yet.
                             </div>
                         ) : (
-                            <SitioBarGraph data={ss} />
+                            <SitioBarGraph data={selectedData} />
                         )}
                     </div>
                 </div>
