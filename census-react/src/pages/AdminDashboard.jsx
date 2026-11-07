@@ -176,11 +176,29 @@ function SitioBarGraph({ data }) {
         )
     );
 
+    const chartHeight = 310;
+    const chartWidth = Math.max(760, data.length * 210);
+    const left = 52;
+    const bottom = 58;
+    const top = 24;
+    const plotHeight = chartHeight - top - bottom;
+    const groupWidth = (chartWidth - left - 24) / data.length;
+    const barGap = 3;
+    const barWidth = Math.max(
+        5,
+        Math.min(18, (groupWidth - 26) / metrics.length - barGap)
+    );
+
+    const yTicks = 5;
+
     return (
-        <div className="sitio-chart">
-            <div className="d-flex flex-wrap gap-3 mb-4" aria-label="Chart legend">
+        <div className="sitio-chart overflow-auto">
+            <div className="d-flex flex-wrap gap-3 mb-3" aria-label="Chart legend">
                 {metrics.map((metric) => (
-                    <div className="d-flex align-items-center gap-2 small" key={metric.key}>
+                    <div
+                        className="d-flex align-items-center gap-2 small"
+                        key={metric.key}
+                    >
                         <span
                             style={{
                                 width: 12,
@@ -195,53 +213,159 @@ function SitioBarGraph({ data }) {
                 ))}
             </div>
 
-            <div className="d-flex flex-column gap-4">
-                {data.map((row) => (
-                    <div key={row.sitio}>
-                        <div className="fw-semibold mb-2">{row.sitio}</div>
+            <svg
+                viewBox={`0 0 ${chartWidth} ${chartHeight}`}
+                role="img"
+                aria-label="Vertical bar chart showing statistics by sitio"
+                style={{
+                    width: '100%',
+                    minWidth: 720,
+                    display: 'block',
+                    overflow: 'visible',
+                }}
+            >
+                <style>{`
+                    .sitio-bar {
+                        transform-box: fill-box;
+                        transform-origin: bottom;
+                        animation: growBar 900ms cubic-bezier(.22,1,.36,1) both;
+                    }
+                    .sitio-value {
+                        opacity: 0;
+                        animation: fadeValue 300ms ease forwards;
+                    }
+                    @keyframes growBar {
+                        from { transform: scaleY(0); }
+                        to { transform: scaleY(1); }
+                    }
+                    @keyframes fadeValue {
+                        to { opacity: 1; }
+                    }
+                `}</style>
 
-                        <div className="d-flex flex-column gap-2">
-                            {metrics.map((metric) => {
-                                const value = Number(row[metric.key]) || 0;
-                                const width = value === 0
-                                    ? 0
-                                    : Math.max(4, (value / maxValue) * 100);
+                {Array.from({ length: yTicks + 1 }).map((_, index) => {
+                    const value = Math.round(
+                        (maxValue / yTicks) * (yTicks - index)
+                    );
+                    const y = top + (plotHeight / yTicks) * index;
+
+                    return (
+                        <g key={index}>
+                            <line
+                                x1={left}
+                                x2={chartWidth - 18}
+                                y1={y}
+                                y2={y}
+                                stroke="#e9e7ef"
+                                strokeDasharray="4 4"
+                            />
+                            <text
+                                x={left - 10}
+                                y={y + 4}
+                                textAnchor="end"
+                                fontSize="11"
+                                fill="#7a7485"
+                            >
+                                {value}
+                            </text>
+                        </g>
+                    );
+                })}
+
+                <line
+                    x1={left}
+                    x2={chartWidth - 18}
+                    y1={top + plotHeight}
+                    y2={top + plotHeight}
+                    stroke="#d8d4df"
+                />
+
+                {data.map((row, rowIndex) => {
+                    const groupX = left + rowIndex * groupWidth;
+                    const totalBars =
+                        metrics.length * barWidth +
+                        (metrics.length - 1) * barGap;
+                    const startX =
+                        groupX + (groupWidth - totalBars) / 2;
+
+                    return (
+                        <g key={row.sitio}>
+                            {metrics.map((metric, metricIndex) => {
+                                const value =
+                                    Number(row[metric.key]) || 0;
+                                const height =
+                                    (value / maxValue) * plotHeight;
+                                const x =
+                                    startX +
+                                    metricIndex *
+                                        (barWidth + barGap);
+                                const y =
+                                    top + plotHeight - height;
 
                                 return (
-                                    <div className="d-flex align-items-center gap-2" key={metric.key}>
-                                        <div
-                                            className="text-secondary small text-end"
-                                            style={{ width: 76, flexShrink: 0 }}
+                                    <g key={metric.key}>
+                                        <rect
+                                            className="sitio-bar"
+                                            x={x}
+                                            y={y}
+                                            width={barWidth}
+                                            height={height}
+                                            rx="3"
+                                            fill={metric.color}
+                                            style={{
+                                                animationDelay:
+                                                    `${
+                                                        rowIndex * 80 +
+                                                        metricIndex * 70
+                                                    }ms`,
+                                            }}
                                         >
-                                            {metric.label}
-                                        </div>
+                                            <title>
+                                                {row.sitio}: {metric.label} — {value}
+                                            </title>
+                                        </rect>
 
-                                        <div
-                                            className="flex-grow-1 rounded-pill overflow-hidden"
-                                            style={{ height: 16, background: '#f1eff7' }}
-                                        >
-                                            <div
-                                                className="rounded-pill h-100"
+                                        {value > 0 && (
+                                            <text
+                                                className="sitio-value"
+                                                x={x + barWidth / 2}
+                                                y={Math.max(15, y - 6)}
+                                                textAnchor="middle"
+                                                fontSize="10"
+                                                fontWeight="700"
+                                                fill="#4a4455"
                                                 style={{
-                                                    width: width + '%',
-                                                    minWidth: value > 0 ? 8 : 0,
-                                                    backgroundColor: metric.color,
-                                                    transition: 'width 0.4s ease',
+                                                    animationDelay:
+                                                        `${
+                                                            650 +
+                                                            rowIndex * 80 +
+                                                            metricIndex * 70
+                                                        }ms`,
                                                 }}
-                                                title={metric.label + ': ' + value}
-                                            />
-                                        </div>
-
-                                        <strong className="small text-end" style={{ width: 24 }}>
-                                            {value}
-                                        </strong>
-                                    </div>
+                                            >
+                                                {value}
+                                            </text>
+                                        )}
+                                    </g>
                                 );
                             })}
-                        </div>
-                    </div>
-                ))}
-            </div>
+
+                            <text
+                                x={groupX + groupWidth / 2}
+                                y={chartHeight - 22}
+                                textAnchor="middle"
+                                fontSize="12"
+                                fontWeight="600"
+                                fill="#4a4455"
+                            >
+                                {row.sitio.length > 18
+                                    ? row.sitio.slice(0, 16) + '…'
+                                    : row.sitio}
+                            </text>
+                        </g>
+                    );
+                })}
+            </svg>
         </div>
     );
 }
