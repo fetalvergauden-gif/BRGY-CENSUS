@@ -37,7 +37,7 @@ export default function AdminDashboard() {
             title="Admin Dashboard"
             subtitle="Overview of submitted Barangay Census data."
         >
-            <div className="row g-3 mb-4">
+            <div className="row row-cols-1 row-cols-sm-2 row-cols-xl-5 g-3 mb-3">
                 {[
                     ['TOTAL HOUSEHOLDS', s.households, 'bi-houses'],
                     ['TOTAL RESIDENTS', s.population, 'bi-people'],
@@ -46,7 +46,7 @@ export default function AdminDashboard() {
                     ['4Ps BENEFICIARIES', s.fourPs, 'bi-heart'],
                 ].map(([l, v, i]) => (
                     <div
-                        className="col-6 col-xl-2"
+                        className="col"
                         key={l}
                     >
                         <div className="stat-card census-stat h-100">
@@ -66,8 +66,8 @@ export default function AdminDashboard() {
                 ))}
             </div>
 
-            <div className="row g-4">
-                <div className="col-12 col-xl-7">
+            <div className="row g-3">
+                <div className="col-12">
                     <div className="data-card">
                         <div className="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
                             <div>
@@ -119,48 +119,11 @@ export default function AdminDashboard() {
                     </div>
                 </div>
 
-                <div className="col-12 col-xl-5">
-                    <div className="data-card">
-                        <h5 className="mb-3">
-                            Population per Sitio
-                        </h5>
-
-                        {ss.map((r) => (
-                            <div
-                                className="bar-row"
-                                key={r.sitio}
-                            >
-                                <div className="d-flex justify-content-between small">
-                                    <span>{r.sitio}</span>
-                                    <b>{r.population}</b>
-                                </div>
-
-                                <div className="bar-track">
-                                    <div
-                                        className="bar-fill"
-                                        style={{
-                                            width: `${Math.max(
-                                                8,
-                                                (r.population /
-                                                    Math.max(
-                                                        1,
-                                                        s.population
-                                                    )) *
-                                                    100
-                                            )}%`,
-                                        }}
-                                    />
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-
                 <div className="col-12">
                     <div className="data-card">
-                        <h5>Social Program Distribution</h5>
+                        <h5 className="mb-1">Social Program Distribution</h5><p className="text-secondary small mb-3">Summary of barangay social program beneficiaries.</p>
 
-                        <div className="row g-3 mt-1">
+                        <div className="row g-3 mt-0">
                             {[
                                 [
                                     'Senior Citizens',
