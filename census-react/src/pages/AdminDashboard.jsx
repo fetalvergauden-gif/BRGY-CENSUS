@@ -185,11 +185,11 @@ function SitioBarGraph({ data }) {
         )
     );
 
-    const chartHeight = 245;
+    const chartHeight = 195;
     const chartWidth = Math.max(620, data.length * 170);
     const left = 42;
-    const bottom = 46;
-    const top = 18;
+    const bottom = 38;
+    const top = 12;
     const plotHeight = chartHeight - top - bottom;
     const groupWidth = (chartWidth - left - 24) / data.length;
     const barGap = 3;
@@ -198,7 +198,7 @@ function SitioBarGraph({ data }) {
         Math.min(14, (groupWidth - 20) / metrics.length - barGap)
     );
 
-    const yTicks = 5;
+    const yTicks = 4;
 
     return (
         <div className="sitio-chart overflow-auto">
@@ -211,7 +211,7 @@ function SitioBarGraph({ data }) {
                         <span
                             style={{
                                 width: 12,
-                                height: 12,
+                                height: 10,
                                 borderRadius: 3,
                                 backgroundColor: metric.color,
                                 display: 'inline-block',
