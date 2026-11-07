@@ -58,40 +58,18 @@ export default function AdminDashboard() {
             <div className="row g-4">
                 <div className="col-12 col-xl-7">
                     <div className="data-card">
-                        <div className="d-flex justify-content-between align-items-center mb-3">
-                            <h5>Statistics by Sitio</h5>
-                        </div>
+                        <h5 className="mb-1">Statistics by Sitio</h5>
+                        <p className="text-secondary small mb-4">
+                            Compare census statistics for every sitio.
+                        </p>
 
-                        <div className="table-responsive">
-                            <table className="table align-middle">
-                                <thead>
-                                    <tr>
-                                        <th>Sitio</th>
-                                        <th>Households</th>
-                                        <th>Population</th>
-                                        <th>Male</th>
-                                        <th>Female</th>
-                                        <th>Senior</th>
-                                        <th>PWD</th>
-                                        <th>4Ps</th>
-                                    </tr>
-                                </thead>
-
-                                <tbody>
-                                    {ss.map((r) => (
-                                        <tr key={r.sitio}>
-                                            {Object.values(r).map(
-                                                (v, i) => (
-                                                    <td key={i}>
-                                                        {v}
-                                                    </td>
-                                                )
-                                            )}
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
+                        {ss.length === 0 ? (
+                            <div className="text-center text-secondary py-5">
+                                No sitio statistics available yet.
+                            </div>
+                        ) : (
+                            <SitioBarGraph data={ss} />
+                        )}
                     </div>
                 </div>
 
@@ -178,3 +156,92 @@ export default function AdminDashboard() {
     );
 }
 
+
+
+function SitioBarGraph({ data }) {
+    const metrics = [
+        { key: 'households', label: 'Households', color: '#6f42c1' },
+        { key: 'population', label: 'Population', color: '#8b5cf6' },
+        { key: 'male', label: 'Male', color: '#2563eb' },
+        { key: 'female', label: 'Female', color: '#ec4899' },
+        { key: 'senior', label: 'Senior', color: '#f59e0b' },
+        { key: 'pwd', label: 'PWD', color: '#10b981' },
+        { key: 'fourPs', label: '4Ps', color: '#ef4444' },
+    ];
+
+    const maxValue = Math.max(
+        1,
+        ...data.flatMap((row) =>
+            metrics.map((metric) => Number(row[metric.key]) || 0)
+        )
+    );
+
+    return (
+        <div className="sitio-chart">
+            <div className="d-flex flex-wrap gap-3 mb-4" aria-label="Chart legend">
+                {metrics.map((metric) => (
+                    <div className="d-flex align-items-center gap-2 small" key={metric.key}>
+                        <span
+                            style={{
+                                width: 12,
+                                height: 12,
+                                borderRadius: 3,
+                                backgroundColor: metric.color,
+                                display: 'inline-block',
+                            }}
+                        />
+                        <span>{metric.label}</span>
+                    </div>
+                ))}
+            </div>
+
+            <div className="d-flex flex-column gap-4">
+                {data.map((row) => (
+                    <div key={row.sitio}>
+                        <div className="fw-semibold mb-2">{row.sitio}</div>
+
+                        <div className="d-flex flex-column gap-2">
+                            {metrics.map((metric) => {
+                                const value = Number(row[metric.key]) || 0;
+                                const width = value === 0
+                                    ? 0
+                                    : Math.max(4, (value / maxValue) * 100);
+
+                                return (
+                                    <div className="d-flex align-items-center gap-2" key={metric.key}>
+                                        <div
+                                            className="text-secondary small text-end"
+                                            style={{ width: 76, flexShrink: 0 }}
+                                        >
+                                            {metric.label}
+                                        </div>
+
+                                        <div
+                                            className="flex-grow-1 rounded-pill overflow-hidden"
+                                            style={{ height: 16, background: '#f1eff7' }}
+                                        >
+                                            <div
+                                                className="rounded-pill h-100"
+                                                style={{
+                                                    width: width + '%',
+                                                    minWidth: value > 0 ? 8 : 0,
+                                                    backgroundColor: metric.color,
+                                                    transition: 'width 0.4s ease',
+                                                }}
+                                                title={metric.label + ': ' + value}
+                                            />
+                                        </div>
+
+                                        <strong className="small text-end" style={{ width: 24 }}>
+                                            {value}
+                                        </strong>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+}
