@@ -67,10 +67,8 @@ export default function Signup({ onLogin, onBack }) {
       const profile = await response.json().catch(() => ({}))
 
       if (!response.ok) {
-        throw new Error(
-          profile.message ||
-          'Account created, but the profile could not be saved to MySQL.'
-        )
+        // Do not expose backend or database details to the user.
+        throw new Error('ACCOUNT_SYNC_FAILED')
       }
 
       await signOut(auth)
@@ -82,7 +80,8 @@ export default function Signup({ onLogin, onBack }) {
       if (err.code) {
         setError(friendlyError(err.code))
       } else {
-        setError(err.message || 'Something went wrong. Please try again.')
+        console.error('Account setup error:', err)
+        setError('We could not complete your account setup. Please try again later.')
       }
     } finally {
       setLoading(false)
